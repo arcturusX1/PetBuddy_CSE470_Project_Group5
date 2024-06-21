@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ vet.name }} Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <header>
+        <h1>{{ vet.name }}</h1>
+    </header>
+    <main>
+        <section id="vet-profile">
+            <p>Specialty: {{ vet.speciality }}</p>
+            <p>Workplace: {{ vet.workplace }}</p>
+            <p>Experience: {{ vet.experience }} years</p>
+            <p>Fees: ${{ vet.fees }}</p>
+            <p>Availability: {{ vet.availability }}</p>
+            <p>Rating: {{ vet.rating }}</p>
+            <p>Popularity: {{ vet.popularity }}</p>
+            <p>Contact: <a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></p>
+        </section>
+    </main>
+</body>
+</html>

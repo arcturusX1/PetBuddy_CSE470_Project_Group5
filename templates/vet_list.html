@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vet Doctors List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function createAppointment(vetId) {
+            // Get current date and time from user's computer
+            var currentTime = new Date();
+            var dayOfWeek = currentTime.toLocaleDateString('en-US', { weekday: 'long' });
+            var timeOfDay = currentTime.toLocaleTimeString('en-US', { timeStyle: 'short' });
+
+            // Send data to server using fetch API
+            fetch(`/create_appointment/${vetId}`, {
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    dayOfWeek: dayOfWeek,
+                    timeOfDay: timeOfDay
+                })
+            }).then(response => {
+                if (response.ok) {
+                    alert('Appointment created successfully!');
+                } else {
+                    alert('Failed to create appointment.');
+                }
+            }).catch(error => {
+                console.error('Error creating appointment:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        }
+    </script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <header>
+        <h1>List of Vet Doctors</h1>
+    </header>
+    <main>
+        <section id="vet-list">
+            {% for vet in vets %}
+                <div class="vet">
+                    <h2><a href="{{ url_for('vet.vet_profile', vet_id=vet.id) }}">{{ vet.name }}</a></h2>
+                    <p>Specialty: {{ vet.speciality }}</p>
+                    <p>Workplace: {{ vet.workplace }}</p>
+                    <p>Experience: {{ vet.experience }} years</p>
+                    <p>Fees: ${{ vet.fees }}</p>
+                    <p>Availability: {{ vet.availability }}</p>
+                    <p>Rating: {{ vet.rating }}</p>
+                    <p>Popularity: {{ vet.popularity }}</p>
+                    <p>Reviews: {{ vet.reviews}}</p>
+                    <p>Contact: <a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></p>
+                    <button onclick="createAppointment({{ vet.id }})">Create Appointment</button>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>
