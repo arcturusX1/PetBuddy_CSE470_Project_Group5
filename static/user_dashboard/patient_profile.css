@@ -1,0 +1,126 @@
+body {
+  display: flex;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.sidebar {
+  width: 250px;
+  background: linear-gradient(135deg, #4a4a4a, #2b2b2b);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+nav ul li {
+  margin: 20px 0;
+  width: 100%;
+  text-align: center;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  display: block;
+  padding: 10px 0;
+  width: 100%;
+  transition: background 0.3s;
+}
+
+nav ul li a:hover {
+  background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+  border-radius: 4px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+header {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.profile, .goals, .medications, .blood-pressure, .blood-pressure-history {
+  background: linear-gradient(135deg, #f8f9fa, #eceff1);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile:hover, .goals:hover, .medications:hover, .blood-pressure:hover, .blood-pressure-history:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.profile h3 {
+  margin-top: 0;
+}
+
+.profile .tags span {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px 5px 0 0;
+}
+
+.chart {
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(135deg, #e3f2fd, #e1f5fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #777;
+}
+
+.profile {
+  background: linear-gradient(135deg, #ffefba, #ffffff);
+}
+
+.goals {
+  background: linear-gradient(135deg, #f0f4c3, #e6ee9c);
+}
+
+.medications {
+  background: linear-gradient(135deg, #e1bee7, #d1c4e9);
+}
+
+.blood-pressure {
+  background: linear-gradient(135deg, #b3e5fc, #b2ebf2);
+}
+
+.blood-pressure-history {
+  background: linear-gradient(135deg, #ffe0b2, #ffccbc);
+}

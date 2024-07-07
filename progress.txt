@@ -1,0 +1,4 @@
+Yasir 6/7 - added Prescription classes
+Yameem 7/7 - Created User Dashboard Template, Prescriptions Template
+Rashik 7/7 - Created User Dashboard Stylesheets, Appointment Booking Template
+Yasir 7/7 - tried fixing filter because csrf token error from html form->convert to flask_wtforms->flask_wtform conversion ok TODO fix filtering-> filtering fixed | migrating database -> migration OK | renamed main.py to app.py: flask convention | signup OK | TODO: unique email, username, password check, password hashing, login functionality

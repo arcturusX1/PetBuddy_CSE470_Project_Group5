@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Login Form Design | CodeLab</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Title of the login form -->
+        <div class="title">
+            Login Form
+        </div>
+        <!-- Form for user login, posts data to the 'login' route -->
+        <form action="{{ url_for('login_bp.login') }}" method="POST">
+            <!-- Field for username input -->
+            <div class="field">
+                <input type="text" name="username" required>
+                <label>Username</label>
+            </div>
+            <!-- Field for password input -->
+            <br> <div class="field">
+                <input type="password" name="password" required>
+                <label>Password</label>
+            </div>
+            <div class="content">
+                <!-- Checkbox for 'Remember me' option -->
+                <div class="checkbox">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <!-- Link to 'Forgot password' page -->
+                <div class="pass-link">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            <!-- Submit button for the login form -->
+            <div class="field">
+                <input type="submit" value="Login">
+            </div>
+            <!-- Link to the signup page for new users -->
+            <div class="signup-link">
+                Not a member? <a href="{{ url_for('signup_bp.signup') }}">Signup now</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

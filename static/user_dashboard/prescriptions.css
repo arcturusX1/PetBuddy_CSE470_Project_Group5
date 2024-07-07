@@ -1,0 +1,102 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.prescription-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.prescription-item {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.prescription-item:hover {
+  background-color: #f0f0f0;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 800px;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.prescription-template {
+  font-family: 'Arial', sans-serif;
+}
+
+.prescription-template h1 {
+  text-align: center;
+  color: #8a1f7a;
+  font-size: 24px;
+}
+
+.prescription-header, .patient-info, .physician-info {
+  margin: 20px 0;
+  padding: 10px;
+  border-bottom: 2px solid #f39c12;
+}
+
+.prescription-header div, .patient-info div, .physician-info div {
+  margin: 10px 0;
+}
+
+.patient-info h2 {
+  color: #8a1f7a;
+  font-size: 20px;
+}
+
+.footer-note {
+  text-align: center;
+  margin: 20px 0;
+  color: #e74c3c;
+}
