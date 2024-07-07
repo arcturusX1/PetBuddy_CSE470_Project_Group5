@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vet Doctors List</title>
+    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script>
+        // Function to create an appointment for a vet
         function createAppointment(vetId) {
-            // Get current date and time from user's computer
+            // Get the current date and time
             var currentTime = new Date();
+            // Extract the day of the week and time of day from the current date and time
             var dayOfWeek = currentTime.toLocaleDateString('en-US', { weekday: 'long' });
             var timeOfDay = currentTime.toLocaleTimeString('en-US', { timeStyle: 'short' });
 
-            // Send data to server using fetch API
+            // Send a POST request to create an appointment
             fetch(`/create_appointment/${vetId}`, {
-                method:'POST',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -36,28 +39,84 @@
     </script>
 </head>
 <body>
+    <!-- Include navigation bar -->
     {% include 'navbar.html' %}
-    <header>
-        <h1>List of Vet Doctors</h1>
-    </header>
-    <main>
-        <section id="vet-list">
-            {% for vet in vets %}
-                <div class="vet">
-                    <h2><a href="{{ url_for('vet.vet_profile', vet_id=vet.id) }}">{{ vet.name }}</a></h2>
-                    <p>Specialty: {{ vet.speciality }}</p>
-                    <p>Workplace: {{ vet.workplace }}</p>
-                    <p>Experience: {{ vet.experience }} years</p>
-                    <p>Fees: ${{ vet.fees }}</p>
-                    <p>Availability: {{ vet.availability }}</p>
-                    <p>Rating: {{ vet.rating }}</p>
-                    <p>Popularity: {{ vet.popularity }}</p>
-                    <p>Reviews: {{ vet.reviews}}</p>
-                    <p>Contact: <a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></p>
-                    <button onclick="createAppointment({{ vet.id }})">Create Appointment</button>
-                </div>
-            {% endfor %}
-        </section>
-    </main>
+    <div class="container">
+        <header>
+            <h1>List of Vet Doctors</h1>
+        </header>
+        <main>
+            <section id="vet-list">
+                <!-- Form to filter vet list -->
+                <form method="GET" action="{{ url_for('vet_bp.filter_vets') }}" class="form-inline mb-3">
+                    <!-- Specialty filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="speciality" class="sr-only">Specialty</label>
+                        <select name="speciality" id="speciality" class="form-control">
+                            <option value="">All Specialties</option>
+                            {% for spec in specialities %}
+                                <option value="{{ spec[0] }}">{{ spec[0] }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                    <!-- Workplace filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="workplace" class="sr-only">Workplace</label>
+                        <select name="workplace" id="workplace" class="form-control">
+                            {% for place in workplaces %}
+                                <option value="{{ place[0] }}">{{ place[0] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Experience filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="experience" class="sr-only">Experience</label>
+                        <select name="experience" id="experience" class="form-control">
+                            <option value="">All Experience Levels</option>
+                            <option value="0-2">0-2 years</option>
+                            <option value="3-5">3-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="10+">10+ years</option>
+                        </select>
+                    </div>
+                    <!-- Filter button -->
+                    <button type="submit" class="btn btn-primary mb-2">Filter</button>
+                </form>
+                <!-- Table to display the list of vets -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Specialty</th>
+                            <th>Workplace</th>
+                            <th>Experience (years)</th>
+                            <th>Fees ($)</th>
+                            <th>Availability</th>
+                            <th>Rating</th>
+                            <th>Contact</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the list of vets and display their information -->
+                        {% for vet in vets %}
+                        <tr>
+                            <td><a href="{{ url_for('vet_bp.vet_profile', vet_id=vet.id) }}">{{ vet.name }}</a></td>
+                            <td>{{ vet.speciality }}</td>
+                            <td>{{ vet.workplace }}</td>
+                            <td>{{ vet.experience }}</td>
+                            <td>{{ vet.fees }}</td>
+                            <td>{{ vet.availability }}</td>
+                            <td>{{ vet.rating }}</td>
+                            <td><a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></td>
+                            <td><button class="btn btn-primary" onclick="createAppointment({{ vet.id }})">Create Appointment</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
