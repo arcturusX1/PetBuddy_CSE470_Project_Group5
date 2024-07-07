@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescriptions</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_dashboard/prescriptions.css') }}">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -12,6 +13,7 @@
         <ul class="prescription-list">
             <li class="prescription-item" data-id="1">
                My Prescription
+                Carbidopa-Levidopa-ENTA
             </li>
             <!-- Add more prescription items as needed -->
         </ul>
@@ -45,10 +47,11 @@
                     <div>Physician Signature: <span id="physician-signature"><img src="signature.png" alt="signature"></span></div>
                     <div>Physician Email: <span id="physician-email">jtobias1@umich.edu</span></div>
                 </div>
+                <div class="footer-note">¯\_(ツ)_/¯ - there seems to be an error! We are working on it.</div>
             </div>
         </div>
     </div>
-
     <script src="{{url_for('static', filename='user_dashboard/prescriptions.js')}}"></script>
+    <script src="script.js"></script>
 </body>
 </html>

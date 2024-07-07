@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, render_template
 
 from blueprints.forms import UserForm
+
 from model.database import User, db
 
 signup_bp = Blueprint('signup_bp', __name__)
@@ -34,7 +35,8 @@ def signup():
                             is_vet=is_vet
                            ))
         db.session.commit()
-        
+        email = form.email.data
+        account_type = form.account_type.data
         # Save user to the database (if required)
         flash('User successfully created!', 'success')
     else:

@@ -63,6 +63,40 @@
                         {{ form.experience(class="form-control") }}
                     </div>
                     {{ form.submit(class="btn btn-primary mb-2") }}
+                <form method="GET" action="{{ url_for('vet_bp.filter_vets') }}" class="form-inline mb-3">
+                    <!-- Specialty filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="speciality" class="sr-only">Specialty</label>
+                        <select name="speciality" id="speciality" class="form-control">
+                            <option value="">All Specialties</option>
+                            {% for spec in specialities %}
+                                <option value="{{ spec[0] }}">{{ spec[0] }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                    <!-- Workplace filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="workplace" class="sr-only">Workplace</label>
+                        <select name="workplace" id="workplace" class="form-control">
+                            {% for place in workplaces %}
+                                <option value="{{ place[0] }}">{{ place[0] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Experience filter -->
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="experience" class="sr-only">Experience</label>
+                        <select name="experience" id="experience" class="form-control">
+                            <option value="">All Experience Levels</option>
+                            <option value="0-2">0-2 years</option>
+                            <option value="3-5">3-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="10+">10+ years</option>
+                        </select>
+                    </div>
+                    <!-- Filter button -->
+                    <button type="submit" class="btn btn-primary mb-2">Filter</button>
                 </form>
                 <!-- Table to display the list of vets -->
                 <table class="table table-striped">
@@ -92,6 +126,7 @@
                             <td>{{ vet.rating }}</td>
                             <td><a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></td>
                             <td><button class="btn btn-primary" onclick="createAppointment({{ vet.id }})">Book an Appointment</button></td>
+                            <td><button class="btn btn-primary" onclick="createAppointment({{ vet.id }})">Create Appointment</button></td>
                         </tr>
                         {% endfor %}
                     </tbody>

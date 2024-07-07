@@ -1,4 +1,4 @@
-#ini sqlalchemy in database.py then import it in main.py
+#init sqlalchemy in database.py then import it in main.py
 from enum import unique
 import json
 
@@ -16,6 +16,7 @@ class User(db.Model):
   first_name = db.Column(db.String(80), nullable=False)
   last_name = db.Column(db.String(80), nullable=False)
   email = db.Column(db.String(120), unique=True, nullable=False)
+
   phone = db.Column(db.String(80), unique=True, nullable=False)
   is_user = db.Column(db.Boolean, nullable=False)
   is_vet = db.Column(db.Boolean, nullable=False)
@@ -76,9 +77,9 @@ class Prescription(db.Model):
                       primary_key=True) 
   #user_id from User table is primary key
   med_1 = db.Column(db.String(100), primary_key=True)
+  med_1 = db.Column(db.Integer, primary_key=True)
   med_2 = db.Column(db.String(100), nullable=False)
   test_1 = db.Column(db.String(50), nullable=False)
   test_2 = db.Column(db.String(50), nullable=False)
-  
   user = db.relationship('User', back_populates='prescription')
-
+  user = db.relationship('User', back_populates='prescriptions')

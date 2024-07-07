@@ -2,12 +2,19 @@ from flask import Blueprint, abort, jsonify, render_template, request
 from model.database import Vet, VetReview, db
 from flask_wtf.csrf import validate_csrf
 from .forms import VetFilterForm
+import logging
+
+from flask import Blueprint, abort, jsonify, render_template, request
+
+from model.database import Vet, VetReview, db
+
 
 vet_bp = Blueprint('vet_bp', __name__)
 
 @vet_bp.route('/vets_list')
 def show_vets():
     vets = Vet.query.all()
+
     specialities = db.session.query(Vet.speciality.distinct()).all()
     workplaces = db.session.query(Vet.workplace.distinct()).all()
     form = VetFilterForm()
@@ -16,11 +23,13 @@ def show_vets():
                            specialities=specialities, 
                            workplaces=workplaces,
                           form=form)
+    return render_template('vet_list.html', vets=vets)
 
 @vet_bp.route('/vet/<int:vet_id>')
 def vet_profile(vet_id):
     vet = Vet.query.get_or_404(vet_id)
     reviews = VetReview.query.filter_by(vet_id=vet_id).all()  # gets vet.id and checks with vet.id in VetReview
+    reviews = VetReview.query.filter_by(vet_id=vet_id).all() # gets vet.id and checks with vet.id in VetReview
     return render_template('vet_profile.html', vet=vet)
 
 # Vet Search
@@ -89,3 +98,32 @@ def filter_vets():
         vets = Vet.query.all()
 
     return render_template('vet_list.html', form=form, vets=vets)
+
+
+@vet_bp.route('/filter', methods=['GET'])
+def filter_vets():
+    query = Vet.query
+
+    specialities = db.session.query(Vet.speciality.distinct()).all()
+    workplaces = db.session.query(Vet.workplace.distinct()).all() # passing to the filter dropdown 
+
+    speciality = request.args.get('speciality')
+    workplace = request.args.get('workplace')
+    experience = request.args.get('experience')
+
+    if speciality:
+        query = query.filter(Vet.speciality == speciality)
+    if workplace:
+        query = query.filter(Vet.workplace == workplace)
+    if experience:
+        if experience == '0-2':
+            query = query.filter(Vet.experience.between(0, 2))
+        elif experience == '3-5':
+            query = query.filter(Vet.experience.between(3, 5))
+        elif experience == '6-10':
+            query = query.filter(Vet.experience.between(6, 10))
+        elif experience == '10+':
+            query = query.filter(Vet.experience >= 10)
+
+    vets = query.all()
+    return render_template('vet_list.html', vets=vets, specialites = specialities, workplaces = workplaces)

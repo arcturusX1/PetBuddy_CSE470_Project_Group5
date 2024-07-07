@@ -9,7 +9,6 @@ class UserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     phone = StringField('Phone Number', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    
     account_type = SelectField('Account Type', choices=[('user', 'User'), ('vet', 'Vet')], validators=[DataRequired()])
     submit = SubmitField('Add User')
 
@@ -43,3 +42,5 @@ class VetFilterForm(FlaskForm):
     def update_choices(self, specialities, workplaces):
         self.speciality.choices = [('', 'All Specialties')] + [(s[0], s[0]) for s in specialities]
         self.workplace.choices = [('', 'All Workplaces')] + [(w[0], w[0]) for w in workplaces]
+
+    remember= BooleanField('Remember Me')
