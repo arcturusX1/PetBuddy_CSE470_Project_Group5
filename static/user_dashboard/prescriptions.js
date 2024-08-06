@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // For demonstration, using static content
             prescriptionNo.textContent = `000${id}`;
             prescriptionDate.textContent = `September 28, 1977`;
-            patientName.textContent = `Cherianne Gubbins`;
+            // patientName.textContent = `Cherianne Gubbins`;
             patientAge.textContent = `10`;
             patientPhone.textContent = `+3 (66) 651-5527`;
             patientDob.textContent = `Wednesday, September 28, 1977`;

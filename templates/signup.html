@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% include 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +12,84 @@
 <body>
     <div class="container">
         <h2>Signup</h2>
-        <form method="POST" action="{{ url_for('signup_bp.signup') }}">
+        <form method="POST" action="{{ url_for('auth_bp.signup') }}">
             {{ form.csrf_token() }}
             <div class="form-group">
                 {{ form.username.label }}<br>
                 {{ form.username(size=32, class_="form-control") }}
+                {% if form.username.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.username.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.email.label }}<br>
                 {{ form.email(size=32, class_="form-control") }}
+                {% if form.email.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.email.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.pass1.label }}<br>
+                {{ form.pass1(size=32, class_="form-control") }}
+                {% if form.pass1.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.pass1.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.pass2.label }}<br>
+                {{ form.pass2(size=32, class_="form-control") }}
+                {% if form.pass2.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.pass2.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.first_name.label }}<br>
                 {{ form.first_name(size=32, class_="form-control") }}
+                {% if form.first_name.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.first_name.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.last_name.label }}<br>
                 {{ form.last_name(size=32, class_="form-control") }}
+                {% if form.last_name.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.last_name.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.phone.label }}<br>
                 {{ form.phone(size=32, class_="form-control") }}
+                {% if form.phone.errors %}
+                        <div class="alert alert-danger">
+                                {% for error in form.phone.errors %}
+                                        <p>{{ error }}</p>
+                                {% endfor %}
+                        </div>
+                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.account_type.label }}<br>
@@ -39,15 +99,7 @@
                 <input type="submit" value="Signup" class="btn btn-primary">
             </div>
         </form>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
     </div>
 </body>
 </html>
+{% endblock %}

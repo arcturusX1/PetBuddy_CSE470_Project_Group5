@@ -1,6 +1,8 @@
 from flask import Blueprint, abort, jsonify, render_template, request
-from model.database import Vet, VetReview, db
 from flask_wtf.csrf import validate_csrf
+
+from model.database import Vet, VetReview, db
+
 from .forms import VetFilterForm
 
 vet_bp = Blueprint('vet_bp', __name__)

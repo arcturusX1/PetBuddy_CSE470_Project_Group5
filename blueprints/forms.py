@@ -1,21 +1,35 @@
+
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, SelectField, StringField, SubmitField, validators
-from wtforms.validators import DataRequired, Email, Optional
+from wtforms import (
+    BooleanField,
+    IntegerField,
+    PasswordField,
+    SelectField,
+    StringField,
+    SubmitField,
+)
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 
 class UserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    phone = StringField('Phone Number', validators=[DataRequired()])
+    phone = StringField('Phone Number', validators=[DataRequired(), Optional(), ])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    pass1 = PasswordField('Password', validators=[DataRequired(), 
+                                                  Length(min=8, max=15,
+                                                         message='Password must be between 8 and 12 characters long')])
+    pass2 = PasswordField('Confirm Password', validators=[DataRequired(),
+                                                          EqualTo('pass1',
+                                                                message='Passwords do not match')])
     
     account_type = SelectField('Account Type', choices=[('user', 'User'), ('vet', 'Vet')], validators=[DataRequired()])
     submit = SubmitField('Add User')
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = StringField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
     remember= BooleanField('Remember Me')
 

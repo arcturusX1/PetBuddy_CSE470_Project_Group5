@@ -21,9 +21,9 @@ def contact():
 def service():
     return render_template('service.html')
 
-@home_bp.route('/login')
-def login():
-    return render_template('login.html')
+# @home_bp.route('/login')
+# def login():
+#     return render_template('login.html')
 
 # @home_bp.route('/signup')
 # def signup():

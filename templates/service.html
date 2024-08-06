@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% include 'base.html' %}
 
+{% block title %}{% endblock %}
+
+{% block content %}
 <head>
   <!-- Basic -->
   <meta charset="utf-8" />
@@ -33,7 +35,7 @@
       <img src="images/hero-bg.jpg" alt="">
     </div>
     <!-- header section strats -->
-    <header class="header_section">
+    <!-- <header class="header_section">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container">
           <a class="navbar-brand" href="index.html">
@@ -67,7 +69,7 @@
           </div>
         </nav>
       </div>
-    </header>
+    </header> -->
     <!-- end header section -->
   </div>
 
@@ -286,3 +288,4 @@
 </body>
 
 </html>
+{% endblock %}

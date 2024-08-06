@@ -1,14 +1,7 @@
 from flask import Blueprint
 from flask_mail import Mail, Message
 
-app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = '041ea147949443'
-app.config['MAIL_PASSWORD'] = 'bb3bb09ede76ac'
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-
-mail = Mail(app)
+mail = Mail()
 
 mail_bp = Blueprint('mail_bp', __name__) 
 

@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% include 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +43,7 @@
 </head>
 <body>
     <!-- Include navigation bar -->
-    {% include 'navbar.html' %}
+    <!-- {% include 'navbar.html' %} -->
     <div class="container">
         <header>
             <h1>List of Vet Doctors</h1>
@@ -101,3 +104,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

@@ -1,17 +1,19 @@
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg custom_nav-container">
         <a class="navbar-brand" href="{{ url_for('home_bp.index') }}">
+            <!-- Include your logo image here -->
+
             <span>PetBuddy BD</span>
         </a>
         <div>
-            <div class="User_option">
+            <!-- <div class="User_option">
                 <form class="form-inline my-2 mb-3 mb-lg-0">
                     <input type="search" placeholder="Search" />
                     <button class="btn my-sm-0 nav_search-btn" type="submit">
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
                 </form>
-            </div>
+            </div> -->
 
             <div class="custom_menu-btn">
                 <button onclick="openNav()">
@@ -29,8 +31,8 @@
                     <a href="{{ url_for('home_bp.about') }}">About</a>
                     <a href="{{ url_for('home_bp.service') }}">Service</a>
                     <a href="{{ url_for('home_bp.contact') }}">Contact</a>
-                    <a href="{{ url_for('home_bp.login') }}">Login</a>
-                    <a href="{{ url_for('signup_bp.signup') }}">Signup</a>
+                    <a href="{{ url_for('auth_bp.login') }}">Login</a>
+                    <a href="{{ url_for('auth_bp.signup') }}">Signup</a>
                 </div>
             </div>
         </div>
