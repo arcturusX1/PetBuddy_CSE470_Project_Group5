@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment </title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_dashboard/appointment_showcase.css') }}">
+</head>
+<body>
+    <div class="appointment-template">
+        <div class="header">
+            <h2>Appointment </h2>
+        </div>
+        <div class="appointment-info">
+            <h3>Appointment Information</h3>
+            <p><strong>Doctor:</strong> Dr. John Smith</p>
+            <p><strong>Appointment Date:</strong> July 10, 2024</p>
+            <p><strong>Appointment Time:</strong> 10:30 AM</p>
+            <p><strong>Details:</strong> Follow-up visit to discuss test results and ongoing treatment plan.</p>
+        </div>
+        <div class="appointment-actions">
+            <button class="update-btn">Update Appointment</button>
+            <button class="delete-btn">Delete Appointment</button>
+        </div>
+    </div>
+    <script src="{{url_for('static', filename='user_dashboard/appointment_showcase.js')}}"</script>
+        
+</body>
+</html>

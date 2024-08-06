@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescriptions</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_dashboard/prescriptions.css') }}">
+</head>
+<body>
+    
+    <div class="container">
+        <h1>Prescriptions</h1>
+        <ul class="prescription-list">
+            <li class="prescription-item" data-id="1">
+               My Prescription
+            </li>
+            <!-- Add more prescription items as needed -->
+        </ul>
+    </div>
+
+    <!-- Prescription details pop-up -->
+    <div id="prescription-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="prescription-template">
+                <h1>Prescription Template</h1>
+                <div class="prescription-header">
+                    <div>Prescription No.: <span id="prescription-no">{{prescription_data.prescription_no}}</span></div>
+                    <div>Prescription Date: <span id="prescription-date">September 28, 1977</span></div>
+                </div>
+                <div class="patient-info">
+                    <h2>Patient Information</h2>
+                    <!-- {% print prescription_data.name%} -->
+                    <div>Name: <span id="patient-name">{{prescription_data.name}}</span></div>
+                    <div>Medicine 1: <span id="med_1">{{prescription_data.med_1}}</span></div>
+                    <div>Age: <span id="patient-age">10</span></div>
+                    <div>Phone Number: <span id="patient-phone">+3 (66) 651-5527</span></div>
+                    <div>Date of Birth: <span id="patient-dob">September 28, 1977</span></div>
+                    <div>Email: <span id="patient-email">jtobias1@umich.edu</span></div>
+                    <div>Gender: <span id="patient-gender">Female</span></div>
+                    <div>Address: <span id="patient-address">80776 Debs Drive, 15 Redwing Lane, Palmdale, California, 93591, United States</span></div>
+                    <div>Allergies: <span id="patient-allergies">Vestibulum rutrum rutrum neque.</span></div>
+                    <div>Notable Health Condition: <span id="patient-health-condition">Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros.</span></div>
+                </div>
+                <div class="physician-info">
+                    <div>Physician Name: <span id="physician-name">Cherianne Gubbins</span></div>
+                    <div>Physician Phone Number: <span id="physician-phone">+3 (66) 651-5527</span></div>
+                    <div>Physician Signature: <span id="physician-signature"><img src="signature.png" alt="signature"></span></div>
+                    <div>Physician Email: <span id="physician-email">jtobias1@umich.edu</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='user_dashboard/prescriptions.js')}}"></script>
+</body>
+</html>
