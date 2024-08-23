@@ -22,4 +22,67 @@ Yasir - Combine login_bp and signup_bp into auth_bp. Refactoring OK. | Working o
 
 6/8
 
-Yasir - Implemented login, signup, password hashing. TODO: user session across the site, restrict some pages based on user session,
+Yasir - Implemented login signup, password hashing. | Fixed Github pushing garbage (cache?) files to the repo. | TODO: user session across the site, restrict some pages based on user session, 
+
+7/8 
+
+Yasir - Implemented message flashing and its rudimentary CSS. | Implemented custom decorator to check for user type: separate vet and user dashboard and overall access
+
++------------------------------------------+
+
+11/8
+
+Yameem - Changed DB Availability column type to JASONB, changed database.py class accordingly.
+
+13/8
+
+Yameem - Changed the format in which Availability is stored. vet_list.html can display multiple slots in a single day | Removed name column from vets table and joined each row with users table with foreign key.
+
+Yasir - moved datetime formatting function to config.py from app.py
+
++------------------------------------------+
+
+15/8
+
+Yameem - Removed references of user from vet table. It is now independent
+
+17/8
+
+Yameem - Created book_appointment template and bp. Need to fix vet variable
+
+Yasir - Implemented Google OAuth2 login. TODO: Creating Calendar Events with Meet link. 
+
++------------------------------------------+
+
+18/8
+
+Yasir - Calendar event creation code. Requires implementation
+
++------------------------------------------+
+
+19/8
+
+Mostakim - Made the user profile and routed it to be unique for each individual user.
+
+19/8
+
+Yameem - Completed and fixed template and bp for book_appointment
+
++------------------------------------------+
+
+20/8
+
+Mostakim - Created the option to add pets in the user dashboard. Created a Pet class to handle pets in database. Merged the user and patient classes in the database.
+
++------------------------------------------+
+
+21/8
+
+Mostakim - Updated the sign up page to handle duplicate emails and contacts without showing error.
+
+Mostakim - Created the vet profile. Seperated user and vet profile and handling from db.
+
+
++------------------------------------------+
+21/8
+Rashik - Integrated live chat

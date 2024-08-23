@@ -1,0 +1,158 @@
+{% include 'base.html' %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Vet Availability</title>
+    
+    <script>
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        function filterVets() {
+            var selectedDate = document.getElementById('date').value;
+            var selectedTime = document.getElementById('time').value;
+
+            if (!selectedDate || !selectedTime) {
+                alert('Please select both a date and a time.');
+                return;
+            }
+
+            fetch('/book_appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    date: selectedDate,
+                    time: selectedTime
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                var vetList = document.getElementById('vet-list');
+                vetList.innerHTML = '';
+
+                if (data.vets && data.vets.length > 0) {
+                    data.vets.forEach(vet => {
+                        var vetItem = `
+                            <tr>
+                                <td><a href="/vet_profile/${vet.id}">${vet.first_name} ${vet.last_name}</a></td>
+                                <td>${vet.speciality}</td>
+                                <td>${vet.workplace}</td>
+                                <td>${vet.experience}</td>
+                                <td>${vet.fees}</td>
+                                <td>
+                                    <ul>
+                                        ${Object.entries(vet.availability).map(([day, slots]) => ` <li>${day.charAt(0).toUpperCase() + day.slice(1)}: ${slots.join(', ')}</li> `).join('')}
+                                    </ul>
+                                </td>
+                                <td>${vet.rating}</td>
+                                <td><a href="mailto:${vet.contact_info}">${vet.contact_info}</a></td>
+                                <td><button class="btn btn-primary" onclick="createAppointment(${vet.id})">Book an Appointment</button></td>
+                            </tr>
+                        `;
+                        vetList.innerHTML += vetItem;
+                    });
+                } else {
+                    vetList.innerHTML = '<tr><td colspan="9">No vets available at the selected time.</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error filtering vets:', error);
+                alert('Error filtering vets: ' + (error.error || 'An unexpected error occurred.'));
+            });
+        }
+
+
+        function createAppointment(vetId) {
+            var selectedDate = document.getElementById('date').value;
+            var selectedTime = document.getElementById('time').value;
+
+            fetch(`/create_appointment/${vetId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    date: selectedDate,
+                    time: selectedTime
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Appointment created successfully!');
+                } else {
+                    alert('Failed to create appointment.');
+                }
+            })
+            .catch(error => {
+                console.error('Error creating appointment:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Find a Vet by Availability</h1>
+        </header>
+        <main>
+            <section id="filter-section">
+                <form onsubmit="event.preventDefault(); filterVets();" method="POST">
+                    <label for="date">Select Date:</label>
+                    <input type="date" id="date" name="date" required>
+
+                    <label for="time">Select Time:</label>
+                    <select id="time" name="time" required>
+                        <option value="">Select Time</option>
+                        <option value="08:00">08:00</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">Find Available Vets</button>
+                </form>
+            </section>
+            <section id="vet-list-section">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Specialty</th>
+                            <th>Workplace</th>
+                            <th>Experience (years)</th>
+                            <th>Fees ($)</th>
+                            <th>Availability</th>
+                            <th>Rating</th>
+                            <th>Contact</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vet-list">
+                        <!-- Vet details will be dynamically populated here after filtering -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

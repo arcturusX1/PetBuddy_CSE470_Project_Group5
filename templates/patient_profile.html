@@ -1,18 +1,48 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>User Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_dashboard/patient_profile.css') }}">
+    <style>
+        /* Base styling for all boxes */
+        .box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* Hover effect for interactive boxes */
+        .box:hover {
+            background-color: #e0f7fa; /* Light teal background on hover */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+        }
+
+        .box h3, .box h4 {
+            margin-top: 0;
+        }
+
+        .pets-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .pets-list li {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">PetBuddy</div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
+                <li><a href="{{ url_for('home_bp.index') }}">Home</a></li>
                 <li><a href="{{ url_for('prescription.list') }}">Prescriptions</a></li>
                 <li><a href="{{ url_for('appointment_showcase.list') }}">Appointments</a></li>
                 <li><a href="#">Calendar</a></li>
@@ -22,36 +52,50 @@
     </div>
     <div class="main-content">
         <header>
-            <h2>Patient Dashboard</h2>
+            <h2>User Dashboard</h2>
         </header>
         <div class="content">
-            <div class="profile">
-                <h3>Norman Korey</h3>
-                <p>ROOM: 241   DOB: 05/05/1946</p>
-                <p>INFINITY HILLSBORO</p>
-                <h4>Clinical Impressions</h4>
-                <p>He has Parkinson's Disease and is recovering from a knee replacement...</p>
+            <!-- User's Name Box with Hover Effect -->
+            <div class="profile box">
+                <h3>{{ user.first_name }} {{ user.last_name }}</h3>
                 <div class="tags">
-                    <span>WEIGHT-BEARING</span>
-                    <span>FALL RISK</span>
-                    <span>WHEELCHAIR</span>
+                    {% for tag in user.tags_list %}
+                        <span>{{ tag }}</span>
+                    {% endfor %}
                 </div>
             </div>
-            <div class="goals">
-                <h4>Goals</h4>
-                <div class="chart">[Chart]</div>
+            
+            <!-- Pets List Box with Hover Effect -->
+            <div class="pets box">
+                <h4>Your Pets</h4>
+                <ul class="pets-list">
+                    {% for pet in user.pets %}
+                        <li>{{ pet.name }} ({{ pet.animal_type }}, {{ pet.breed }}, Age: {{ pet.age }})</li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="medications">
-                <h4>Medications</h4>
-                <p>Carbidopa-Levidopa-ENTA...</p>
-            </div>
-            <div class="blood-pressure">
-                <h4>Blood Pressure</h4>
-                <p>118 / 80</p>
-            </div>
-            <div class="blood-pressure-history">
-                <h4>Blood Pressure History</h4>
-                <div class="chart">[Chart]</div>
+            
+            <!-- Add a Pet Box with Hover Effect -->
+            <div class="add-pet box">
+                <h4>Add a Pet</h4>
+                <form action="{{ url_for('patient_profile.add_pet') }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div>
+                        {{ form.pet_name.label }} {{ form.pet_name(size=32) }}
+                    </div>
+                    <div>
+                        {{ form.animal_type.label }} {{ form.animal_type() }}
+                    </div>
+                    <div>
+                        {{ form.breed.label }} {{ form.breed(size=32) }}
+                    </div>
+                    <div>
+                        {{ form.age.label }} {{ form.age() }}
+                    </div>
+                    <div>
+                        {{ form.submit() }}
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -1,12 +1,14 @@
 from flask import Blueprint, render_template
+from flask_login.utils import login_required
 
-from model.database import Patient, Prescription
+from model.database import Prescription
 
 #arguments are name of the blueprint, optional - url_prefix = '/some_url'
 prescription_bp = Blueprint('prescription', __name__) 
 
 
 @prescription_bp.route('/prescription') #route assign
+# @login_required
 def list():
   prescription = Prescription.query.first()
   

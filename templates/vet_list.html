@@ -1,6 +1,5 @@
 {% include 'base.html' %}
 
-{% block title %}{% endblock %}
 
 {% block content %}
 <head>
@@ -86,12 +85,28 @@
                         <!-- Loop through the list of vets and display their information -->
                         {% for vet in vets %}
                         <tr>
-                            <td><a href="{{ url_for('vet_bp.vet_profile', vet_id=vet.id) }}">{{ vet.name }}</a></td>
+                            <td>Dr. {{ vet.first_name }} {{ vet.last_name }}</a></td>
                             <td>{{ vet.speciality }}</td>
                             <td>{{ vet.workplace }}</td>
                             <td>{{ vet.experience }}</td>
                             <td>{{ vet.fees }}</td>
-                            <td>{{ vet.availability }}</td>
+                            <td>
+                                {% if vet.availability %}
+                                <ul style="list-style-type: none; padding-left: 0;">
+                                    {% for day, slots in vet.availability.items() %}
+                                        <li><strong>{{ day.capitalize() }}:</strong>
+                                            <ul style="list-style-type: none; padding-left: 0;">
+                                                {% for slot in slots %}
+                                                    <li>{{ slot[0]|to_12_hour }} - {{ slot[1]|to_12_hour }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                    Not available
+                                {% endif %}
+                            </td>
                             <td>{{ vet.rating }}</td>
                             <td><a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></td>
                             <td><button class="btn btn-primary" onclick="createAppointment({{ vet.id }})">Book an Appointment</button></td>

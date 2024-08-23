@@ -166,3 +166,6 @@ replit.nix
 
 # Ignore files that start with a dot and end with numbers
 .*[0-9]
+
+#ignore google client_secrets
+client_secrets.json

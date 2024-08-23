@@ -42,25 +42,25 @@ def search_vets():
         vets = Vet.query.all()
     return render_template('vet_list.html', vets=vets)
 
-@vet_bp.route('/create_appointment/<int:vet_id>', methods=['POST'])
-def create_appointment(vet_id):
-    vet = Vet.query.get(vet_id)
-    if vet is None:
-        logging.error(f'Vet with ID {vet_id} not found.')
-        abort(404, description=f'Vet with ID {vet_id} not found.')
+# @vet_bp.route('/create_appointment/<int:vet_id>', methods=['POST'])
+# def create_appointment(vet_id):
+#     vet = Vet.query.get(vet_id)
+#     if vet is None:
+#         logging.error(f'Vet with ID {vet_id} not found.')
+#         abort(404, description=f'Vet with ID {vet_id} not found.')
 
-    # Parse data sent from client
-    data = request.json
-    dayOfWeek = data.get('dayOfWeek')
-    timeOfDay = data.get('timeOfDay')
+#     # Parse data sent from client
+#     data = request.json
+#     dayOfWeek = data.get('dayOfWeek')
+#     timeOfDay = data.get('timeOfDay')
 
-    availability = vet.get_availability()
-    if dayOfWeek in availability and timeOfDay in availability[dayOfWeek]:
-        # Space to create an Appointment object and save it to the database
-        # For simplicity, this example just returns a success message
-        return jsonify({'message': 'Appointment created successfully'}), 200
-    else:
-        return jsonify({'error': 'Vet is not available at this time'}), 400
+#     availability = vet.get_availability()
+#     if dayOfWeek in availability and timeOfDay in availability[dayOfWeek]:
+#         # Space to create an Appointment object and save it to the database
+#         # For simplicity, this example just returns a success message
+#         return jsonify({'message': 'Appointment created successfully'}), 200
+#     else:
+#         return jsonify({'error': 'Vet is not available at this time'}), 400
 
 @vet_bp.route('/filter_vets', methods=['GET', 'POST'])
 def filter_vets():
