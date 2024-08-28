@@ -61,3 +61,4 @@ def init_app(app):
     logging.basicConfig(level=logging.INFO)
 
     return app
+

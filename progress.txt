@@ -86,3 +86,6 @@ Mostakim - Created the vet profile. Seperated user and vet profile and handling 
 +------------------------------------------+
 21/8
 Rashik - Integrated live chat
+
+25/8
+Yameem - Completed the book_appointment template, appointment template and their respective routes. Now clicking the book appointment button from the page takes the user to the appointment form. The form still needs to be fixed. It should let the user select only the available days and times of the vet.

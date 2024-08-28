@@ -169,3 +169,13 @@ replit.nix
 
 #ignore google client_secrets
 client_secrets.json
+
+#ignore idx settings
+.idx
+
+#ignore venv 
+.venv
+
+#ignore vscode
+.vscode
+

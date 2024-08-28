@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, abort, current_app
-from flask_login import LoginManager, login_user, logout_user, current_user
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
 
@@ -103,3 +103,13 @@ def access_required(user_type):  # Custom decorator to check user type
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+@auth_bp.route('/profile')
+@login_required
+def profile():
+    if current_user.is_vet:
+        return redirect(url_for('vet_profile_bp.vet_profile'))
+    elif current_user.is_user:
+        return redirect(url_for('patient_profile_bp.patient_profile'))
+    else:
+        return "User type not recognized", 403
