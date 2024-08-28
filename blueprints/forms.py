@@ -1,14 +1,17 @@
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
+    DateField,
+    FloatField,
     IntegerField,
     PasswordField,
     SelectField,
     StringField,
     SubmitField,
-    FloatField
+    TimeField,
 )
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+
 
 class UserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -69,8 +72,14 @@ class AddPrescriptionForm(FlaskForm):
     submit = SubmitField('Add Prescription')
 
 class AppointmentForm(FlaskForm):
-    # Define fields for scheduling an appointment
-    submit = SubmitField('Schedule Appointment')
+    vet_name = StringField('Veterinarian', validators=[DataRequired()])
+    speciality = StringField('Specialty', validators=[DataRequired()])
+    workplace = StringField('Workplace', validators=[DataRequired()])
+    fees = StringField('Consultation Fees ($)',
+                       validators=[DataRequired()])
+    date = DateField('Appointment Date', validators=[DataRequired()])
+    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
 class AddPetForm(FlaskForm):
     pet_name = StringField('Pet Name', validators=[DataRequired()])

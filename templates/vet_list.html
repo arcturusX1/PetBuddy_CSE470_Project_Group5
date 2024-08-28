@@ -109,7 +109,9 @@
                             </td>
                             <td>{{ vet.rating }}</td>
                             <td><a href="mailto:{{ vet.contact_info }}">{{ vet.contact_info }}</a></td>
-                            <td><button class="btn btn-primary" onclick="createAppointment({{ vet.id }})">Book an Appointment</button></td>
+                            <td><form action="{{ url_for('book_appointment_bp.create_appointment', vet_id = vet.id) }}">
+                                <button class="btn btn-primary" type="submit">Book an Appointment</button>
+                            </form></td>
                         </tr>
                         {% endfor %}
                     </tbody>

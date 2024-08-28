@@ -122,4 +122,3 @@ class Prescription(db.Model):
 
     def __repr__(self):
         return f'<Prescription {self.id} for User {self.user_id}>'
-
