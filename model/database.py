@@ -1,89 +1,125 @@
-from flask_wtf import FlaskForm
-from wtforms import (
-    BooleanField,
-    DateField,
-    FloatField,
-    IntegerField,
-    PasswordField,
-    SelectField,
-    StringField,
-    SubmitField,
-    TimeField,
-)
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import func
 
 
-class UserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    phone = StringField('Phone Number', validators=[DataRequired(), Optional()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    pass1 = PasswordField('Password', validators=[DataRequired(), 
-                                                  Length(min=8, max=15,
-                                                         message='Password must be between 8 and 15 characters long')])
-    pass2 = PasswordField('Confirm Password', validators=[DataRequired(),
-                                                          EqualTo('pass1',
-                                                                message='Passwords do not match')])
-    account_type = SelectField('Account Type', choices=[('user', 'User'), ('vet', 'Vet')], validators=[DataRequired()])
+db = SQLAlchemy()
 
-    # Vet-specific fields
-    speciality = StringField('Specialty', validators=[Optional()])
-    workplace = StringField('Workplace', validators=[Optional()])
-    experience = IntegerField('Experience', validators=[Optional()])
-    fees = FloatField('Fees', validators=[Optional()])
-    contact_info = StringField('Contact Info', validators=[Optional()])
+# User class for general user information
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    first_name = db.Column(db.String(80), nullable=False)
+    last_name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    phone = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    is_user = db.Column(db.Boolean, nullable=False)
+    is_vet = db.Column(db.Boolean, nullable=False)
+    no_of_pets = db.Column(db.Integer, nullable=False, default=0)
 
-    submit = SubmitField('Register')
+    # Relationships
+    pets = db.relationship('Pet', back_populates='user', cascade="all, delete-orphan")
+    prescriptions = db.relationship('Prescription', back_populates='user', cascade="all, delete-orphan")
+    appointments = db.relationship('Appointment', back_populates='user')
+    vet = db.relationship('Vet', back_populates='user', uselist=False)  # One-to-one relationship with Vet
 
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
+    def __repr__(self):
+        return f'id:{self.id}, username:{self.username}, email:{self.email}'
 
-class VetFilterForm(FlaskForm):
-    speciality = SelectField('Specialty', 
-                             choices=[('', 'All Specialties')], 
-                             validators=[Optional()],
-                            )
-    workplace = SelectField('Workplace', 
-                            choices=[('', 'All Workplaces')], 
-                            validators=[Optional()],
-                           )
-    experience = SelectField('Experience', 
-                             choices=[
-                                 ('', 'All Experience'),
-                                 ('0-2', '0-2 years'),
-                                 ('3-5', '3-5 years'),
-                                 ('6-10', '6-10 years'),
-                                 ('10+', '10+ years')
-                             ], 
-                             validators=[Optional()], 
-                             )
-    submit = SubmitField('Filter')
 
-    def update_choices(self, specialities, workplaces):
-        self.speciality.choices = [('', 'All Specialties')] + [(s[0], s[0]) for s in specialities]
-        self.workplace.choices = [('', 'All Workplaces')] + [(w[0], w[0]) for w in workplaces]
+# Pet class for storing pets details
+class Pet(db.Model):
+    __tablename__ = 'pets'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    animal_type = db.Column(db.String(50), nullable=False)
+    breed = db.Column(db.String(100), nullable=True)
+    age = db.Column(db.Integer, nullable=True)
 
-class AddPrescriptionForm(FlaskForm):
-    # Define fields for adding a prescription
-    submit = SubmitField('Add Prescription')
+    user = db.relationship('User', back_populates='pets')
 
-class AppointmentForm(FlaskForm):
-    vet_name = StringField('Veterinarian', validators=[DataRequired()])
-    speciality = StringField('Specialty', validators=[DataRequired()])
-    workplace = StringField('Workplace', validators=[DataRequired()])
-    fees = StringField('Consultation Fees ($)',
-                       validators=[DataRequired()])
-    date = DateField('Appointment Date', validators=[DataRequired()])
-    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    def __repr__(self):
+        return f'<Pet {self.name}, Type {self.animal_type}, Breed {self.breed}, Age {self.age}>'
 
-class AddPetForm(FlaskForm):
-    pet_name = StringField('Pet Name', validators=[DataRequired()])
-    animal_type = SelectField('Animal Type', choices=[('Dog', 'Dog'), ('Cat', 'Cat')], validators=[DataRequired()])
-    breed = StringField('Breed', validators=[Optional()])
-    age = IntegerField('Age', validators=[Optional()])
-    submit = SubmitField('Add Pet')
+
+# Vet class for veterinarian details
+class Vet(db.Model):
+    __tablename__ = 'vets'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # ForeignKey linking to User
+    first_name = db.Column(db.String(80), nullable=False)
+    last_name = db.Column(db.String(80), nullable=False)
+    speciality = db.Column(db.String(100))
+    workplace = db.Column(db.String(100))
+    experience = db.Column(db.Integer)
+    fees = db.Column(db.Float)
+    rating = db.Column(db.Float)
+    contact_info = db.Column(db.String(100))
+    availability = db.Column(JSONB)
+
+    user = db.relationship('User', back_populates='vet')  # Backref to the User model
+    reviews = db.relationship('VetReview', back_populates='vet', cascade="all, delete-orphan")
+    appointments = db.relationship('Appointment', back_populates='vet')
+
+    def set_availability(self, availability_dict):
+        self.availability = availability_dict
+
+    def get_availability(self):
+        return self.availability
+
+    def __repr__(self):
+        return f'<Vet: ID:{self.id} {self.first_name} {self.last_name}>'
+
+
+# VetReview class for veterinarian reviews
+class VetReview(db.Model):
+    __tablename__ = 'vet_reviews'
+    id = db.Column(db.Integer, primary_key=True)
+    vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
+    review = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Float, nullable=False)
+    review_date = db.Column(db.Date, default=db.func.current_date(), nullable=False)
+
+    vet = db.relationship('Vet', back_populates='reviews')
+
+    def __repr__(self):
+        return f'<VetReview {self.id} for Vet {self.vet_id}>'
+
+
+# Appointment class for scheduling appointments
+class Appointment(db.Model):
+    __tablename__ = 'appointments'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    date_time = db.Column(db.DateTime, default = func.now(), nullable=False)
+    vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    vet = db.relationship('Vet', back_populates='appointments')
+    user = db.relationship('User', back_populates='appointments')
+
+    def __repr__(self):
+        return f'<Appointment {self.id} for User {self.user_id} at {self.date} {self.time}>'
+
+
+# Prescription class for patient prescriptions
+class Prescription(db.Model):
+    __tablename__ = 'prescription'
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    med_1 = db.Column(db.String(100), nullable=False)
+    med_2 = db.Column(db.String(100), nullable=True)
+    test_1 = db.Column(db.String(50), nullable=True)
+    test_2 = db.Column(db.String(50), nullable=True)
+
+    user = db.relationship('User', back_populates='prescriptions')
+
+    __table_args__ = (db.UniqueConstraint('id', name='uix_id'),)
+
+    def __repr__(self):
+        return f'<Prescription {self.id} for User {self.user_id}>'
+
