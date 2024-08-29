@@ -28,6 +28,7 @@ def login():
         if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
             flash('Login Successful!', 'success')
+            print('login success')
             return redirect(url_for('home_bp.index'))
         else:
             flash('Invalid email or password', 'danger')

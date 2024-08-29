@@ -1,11 +1,14 @@
 from datetime import datetime
 
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, render_template, request, jsonify
 from flask_login import current_user
 
 from model.database import Appointment, Vet, db
 
 from .forms import AppointmentForm
+
+import logging
+import json
 
 book_appointment_bp = Blueprint('book_appointment_bp', __name__)
 
@@ -57,10 +60,6 @@ def book_appointment():
     
             return jsonify({'vets': available_vets})
 
-
-            
-        
-
     # For GET requests, render the HTML template
     return render_template('book_appointment.html', vets=[])
 
@@ -69,28 +68,22 @@ def create_appointment(vet_id): #need to hide this ^ vet_id in the url
     
     vet = Vet.query.filter_by(id=vet_id).first()
     form = AppointmentForm(obj=vet) #sends default data to the formx
+    form.vet_name.data = f'{vet.first_name} {vet.last_name}'#fetching first_name, last_name and concatting them. 
+    print(vet.availability)
+    availability = vet.availability
     
     if form.validate_on_submit():
-        form.vet_name.data = f'{vet.first_name} {vet.last_name}' #fetching first_name, last_name and concatting them. 
-        date_time_str = f'{form.date.data} {form.time.data}'
-        date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
+        
         vet_id = vet_id
         user_id = current_user.id
-
+        date_time = datetime.combine(form.date.data, form.time.data)
         appointment = Appointment(
-            date_time = date_time_obj,
-            vet_id = selected_vet_id,
-            user_id = current_user.id
+            date_time=date_time,
+            vet_id=vet_id,
+            user_id=current_user.id
         )
         db.session.add(appointment)
         db.session.commit()
-        print(f'Appointment for user {current_user.id} at {date_time_obj} for {vet.id}')
-        #     return jsonify({'message': 'Appointment booked successfully', 'appointment_id': Appointment.id}), 201
-        # except ValueError as e:
-        #     return jsonify({'error': f'Invalid date or time format: {str(e)}'}), 400
-        # except Exception as e:
-        #     db.session.rollback()
-        #     return jsonify({'error': f'Failed to create appointment: {str(e)}'}), 500
-
-    return render_template('appointment_form.html', form=form)
+        print(f'Appointment for user {current_user.id} at  for {vet.id}')
     
+    return render_template('appointment_form.html', form=form, availability=availability)

@@ -1,66 +1,96 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='user_dashboard/appointment.css') }}"> 
-<title>Doctor Appointment Form</title>
-</head>
+{% extends "base.html" %}
+{% block content %}
 <body>
+    <div class="form-container">
+        <h2>Doctor Appointment Form</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
 
-<center><h2>Doctor Appointment Form</h2></center>
-<div>
-  <div>
-    <div class="container">
-      <form action="submit_phpcrm_form.php" method="post"><br>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
+            <div class="form-group">
+                {{ form.vet_name.label(class="form-label") }}
+                {{ form.vet_name(class="form-control", readonly=True) }}
+            </div>
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <div class="form-group">
+                {{ form.speciality.label(class="form-label") }}
+                {{ form.speciality(class="form-control", readonly=True) }}
+            </div>
 
-            <label for="phone">Phone</label>
-            <input type="number" id="phone" name="phone" required>
+            <div class="form-group">
+                {{ form.workplace.label(class="form-label") }}
+                {{ form.workplace(class="form-control", readonly=True) }}
+            </div>
 
-            <div>
-              <div>
-                <label for="date">Appointment Date</label>
-                <input type="date" id="date" name="date" required>
-              </div>
-            </div>   
+            <div class="form-group">
+                {{ form.fees.label(class="form-label") }}
+                {{ form.fees(class="form-control", readonly=True) }}
+            </div>
 
-            <div>
-              <div>
-                <label for="time">Appointment Time</label>
-                <input type="time" id="time" name="time" required>
-              </div>
+            <div class="form-group">
+                {{ form.date.label(class="form-label") }}
+                {{ form.date(class="form-control", id="date-picker") }}
+            </div>
 
-              <div>  
-                <label for="dob">Date of Birth</label>
-                <input type="date" id="dob" name="dob" required>
+            <div class="form-group">
+                {{ form.time.label(class="form-label") }}
+                <select id="time-select" name="time" class="form-control" required>
+                    <option value="">Select a time</option>
+                </select>
+            </div>
 
-                <label for="details">Details</label>
-                <textarea id="details" name="details" rows="4" maxlength="100" placeholder="Please give a short details about the problems (max 100 words)"></textarea>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var vetAvailability = JSON.parse('{{ availability | tojson | safe }}');
+                console.log('vetAvailability:', vetAvailability);
+                populateDateField(vetAvailability);
+                populateTimeSlotsField(vetAvailability);
+            });
+            function populateDateField(availability) {
+                var dateInput = document.getElementById('date-picker');
+                var availableDays = Object.keys(availability);
                 
-              </div>
-            </div>    
+                // Get today's date and set it as the minimum date
+                var today = new Date();
+                var minDate = today.toISOString().split('T')[0];
+                dateInput.min = minDate;
+                
+                // Set max date to 3 months from now (you can adjust this as needed)
+                var maxDate = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
+                dateInput.max = maxDate;
 
-            <label>Do you require veterinary surgery?</label><br>
-            <input type="radio" id="yes" name="surgery" value="Yes">
-            <label for="yes">Yes</label><br>
-            <input type="radio" id="no" name="surgery" value="No">
-            <label for="no">No</label><br><br>
-
-            <label>Did you avail our service before?</label><br>
-            <input type="radio" id="yes" name="visited" value="Yes">
-            <label for="yes">Yes</label><br>
-            <input type="radio" id="no" name="visited" value="No">
-            <label for="no">No</label><br><br>
-
-
-            <input type="submit" value="Submit" class="btn">
-      </form>                                   
-    </div>
-  </div>
+                dateInput.addEventListener('input', function(e) {
+                    var selectedDate = new Date(e.target.value);
+                    var dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                    
+                    if (!availableDays.includes(dayOfWeek)) {
+                        e.target.value = '';
+                        alert('This day is not available. Available days are: ' + availableDays.join(', '));
+                    }
+                });
+            }
+            function populateTimeSlotsField(vetAvailability) {
+                var timeSlotsField = document.getElementById('time-select');
+                var timeSlots = [];
+                var days = Object.keys(vetAvailability);
+                days.forEach(function(day) {
+                    console.log(vetAvailability[day])
+                    vetAvailability[day].forEach(function(timeSlot) {
+                        timeSlots.push(timeSlot[0] + ' - ' + timeSlot[1]);
+                    });
+                });
+                timeSlots.forEach(function(timeSlot) {
+                    var option = document.createElement('option');
+                    option.value = timeSlot;
+                    option.text = timeSlot;
+                    timeSlotsField.appendChild(option);
+                });
+            }
+        </script>
+    </body>
 </div>
-</body>
-</html>
+{% endblock %}
