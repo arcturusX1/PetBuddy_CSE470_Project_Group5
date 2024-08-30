@@ -176,6 +176,6 @@ client_secrets.json
 #ignore venv 
 .venv
 
-#ignore vscode
+#ignore .vscode
 .vscode
 

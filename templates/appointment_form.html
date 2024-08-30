@@ -48,7 +48,6 @@
                 var vetAvailability = JSON.parse('{{ availability | tojson | safe }}');
                 console.log('vetAvailability:', vetAvailability);
                 populateDateField(vetAvailability);
-                populateTimeSlotsField(vetAvailability);
             });
             function populateDateField(availability) {
                 var dateInput = document.getElementById('date-picker');
@@ -70,23 +69,27 @@
                     if (!availableDays.includes(dayOfWeek)) {
                         e.target.value = '';
                         alert('This day is not available. Available days are: ' + availableDays.join(', '));
+                        return;
                     }
+                    
+                    // Populate time slots for the selected day
+                    populateTimeSlotsField(dayOfWeek, availability);
                 });
             }
-            function populateTimeSlotsField(vetAvailability) {
+            function populateTimeSlotsField(selectedDay, vetAvailability) {
                 var timeSlotsField = document.getElementById('time-select');
-                var timeSlots = [];
-                var days = Object.keys(vetAvailability);
-                days.forEach(function(day) {
-                    console.log(vetAvailability[day])
-                    vetAvailability[day].forEach(function(timeSlot) {
-                        timeSlots.push(timeSlot[0] + ' - ' + timeSlot[1]);
-                    });
-                });
+                
+                // Clear the existing options
+                timeSlotsField.innerHTML = '<option value="">--Select a Time Slot--</option>';
+                
+                // Get the time slots for the selected day
+                var timeSlots = vetAvailability[selectedDay] || [];
+
+                // Populate the dropdown with the time slots for the selected day
                 timeSlots.forEach(function(timeSlot) {
                     var option = document.createElement('option');
-                    option.value = timeSlot;
-                    option.text = timeSlot;
+                    option.value = timeSlot[0] + ' - ' + timeSlot[1];
+                    option.text = timeSlot[0] + ' - ' + timeSlot[1];
                     timeSlotsField.appendChild(option);
                 });
             }
