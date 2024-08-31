@@ -59,7 +59,7 @@ class Vet(db.Model):
     fees = db.Column(db.Float)
     rating = db.Column(db.Float)
     contact_info = db.Column(db.String(100))
-    availability = db.Column(JSONB)
+    availability_json = db.Column(JSONB)
 
     user = db.relationship('User', back_populates='vet')  # Backref to the User model
     reviews = db.relationship('VetReview', back_populates='vet', cascade="all, delete-orphan")
