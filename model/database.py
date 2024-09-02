@@ -81,7 +81,8 @@ class VetAvailability(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
     day=db.Column(db.Text, nullable=False)
-    time=db.Column(db.Time, nullable=False)
+    time_start=db.Column(db.Time, nullable=False)
+    time_end=db.Column(db.Time, nullable=False) 
     booked=db.Column(db.Boolean, nullable=False, default=False)
 
     vet = db.relationship('Vet', back_populates='availability')
