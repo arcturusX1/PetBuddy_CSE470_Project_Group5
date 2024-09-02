@@ -43,57 +43,6 @@
             </div>
         </form>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var vetAvailability = JSON.parse('{{ availability | tojson | safe }}');
-                console.log('vetAvailability:', vetAvailability);
-                populateDateField(vetAvailability);
-            });
-            function populateDateField(availability) {
-                var dateInput = document.getElementById('date-picker');
-                var availableDays = Object.keys(availability);
-                
-                // Get today's date and set it as the minimum date
-                var today = new Date();
-                var minDate = today.toISOString().split('T')[0];
-                dateInput.min = minDate;
-                
-                // Set max date to 3 months from now (you can adjust this as needed)
-                var maxDate = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
-                dateInput.max = maxDate;
-
-                dateInput.addEventListener('input', function(e) {
-                    var selectedDate = new Date(e.target.value);
-                    var dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-                    
-                    if (!availableDays.includes(dayOfWeek)) {
-                        e.target.value = '';
-                        alert('This day is not available. Available days are: ' + availableDays.join(', '));
-                        return;
-                    }
-                    
-                    // Populate time slots for the selected day
-                    populateTimeSlotsField(dayOfWeek, availability);
-                });
-            }
-            function populateTimeSlotsField(selectedDay, vetAvailability) {
-                var timeSlotsField = document.getElementById('time-select');
-                
-                // Clear the existing options
-                timeSlotsField.innerHTML = '<option value="">--Select a Time Slot--</option>';
-                
-                // Get the time slots for the selected day
-                var timeSlots = vetAvailability[selectedDay] || [];
-
-                // Populate the dropdown with the time slots for the selected day
-                timeSlots.forEach(function(timeSlot) {
-                    var option = document.createElement('option');
-                    option.value = timeSlot[0] + ' - ' + timeSlot[1];
-                    option.text = timeSlot[0] + ' - ' + timeSlot[1];
-                    timeSlotsField.appendChild(option);
-                });
-            }
-        </script>
     </body>
 </div>
 {% endblock %}

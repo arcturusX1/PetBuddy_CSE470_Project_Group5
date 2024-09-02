@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request, jsonify
 from flask_login import current_user
 
-from model.database import Appointment, Vet, db
+from model.database import Appointment, VetAvailability, Vet, db
 
 from .forms import AppointmentForm
 
@@ -65,12 +65,10 @@ def book_appointment():
 
 @book_appointment_bp.route('/create_appointment<int:vet_id>', methods=['GET', 'POST'])
 def create_appointment(vet_id): #need to hide this ^ vet_id in the url
-    
     vet = Vet.query.filter_by(id=vet_id).first()
+    availability = VetAvailability.query.filter_by(vet_id=vet_id)
     form = AppointmentForm(obj=vet) #sends default data to the formx
     form.vet_name.data = f'{vet.first_name} {vet.last_name}'#fetching first_name, last_name and concatting them. 
-    print(vet.availability)
-    availability = vet.availability
     
     if form.validate_on_submit():
         
@@ -87,3 +85,9 @@ def create_appointment(vet_id): #need to hide this ^ vet_id in the url
         print(f'Appointment for user {current_user.id} at  for {vet.id}')
     
     return render_template('appointment_form.html', form=form, availability=availability)
+
+def select_day(vet_id):
+    days = VetAvailability.query.with_entities(
+        VetAvailability.day
+    ).filter_by(vet_id)
+    return days

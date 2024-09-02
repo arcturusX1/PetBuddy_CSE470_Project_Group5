@@ -64,7 +64,7 @@ class Vet(db.Model):
     user = db.relationship('User', back_populates='vet')  # Backref to the User model
     reviews = db.relationship('VetReview', back_populates='vet', cascade="all, delete-orphan")
     appointments = db.relationship('Appointment', back_populates='vet')
-    availability = db.relationship('VetAvailability', back_populates='Vet', cascade='all, delete-orphan')
+    availability = db.relationship('VetAvailability', back_populates='vet', cascade='all, delete-orphan')
 
     def set_availability(self, availability_dict):
         self.availability = availability_dict
