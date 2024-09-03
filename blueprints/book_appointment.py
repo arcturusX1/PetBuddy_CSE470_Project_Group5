@@ -70,19 +70,24 @@ def create_appointment(vet_id): #need to hide this ^ vet_id in the url
     form = AppointmentForm(obj=vet) #sends default data to the formx
     form.vet_name.data = f'{vet.first_name} {vet.last_name}'#fetching first_name, last_name and concatting them. 
     form.vet_id.data = vet_id
+    
 
     
     if form.validate_on_submit():
-        user_id = current_user.id
-        date_time = datetime.combine(form.date.data, form.time.data)
-        appointment = Appointment(
-            date_time=date_time,
-            vet_id=vet_id,
-            user_id=current_user.id
-        )
-        db.session.add(appointment)
-        db.session.commit()
-        print(f'Appointment for user {current_user.id} at  for {vet.id}')
+        date = form.date.data
+        time = form.time.date
+        # user_id = current_user.id
+        # date_time = datetime.combine(form.date.data, form.time.data)
+        # appointment = Appointment(
+        #     date_time=date_time,
+        #     vet_id=vet_id,
+        #     user_id=current_user.id
+        # )
+        # db.session.add(appointment)
+        # db.session.commit()
+        # print(f'Appointment for user {current_user.id} at  for {vet.id}')
+    else:
+        print(form.errors)
     
     return render_template('appointment_form.html', form=form, day=day, vet_id=vet_id)
 
@@ -105,7 +110,7 @@ def get_time_slots():
             VetAvailability.time_start,
             VetAvailability.time_end
         ).filter_by(vet_id = vet_id, day = day_name)
-        print(time_slots)
+
         time_slot_strings = [f"{slot.time_start.strftime('%H:%M')} - {slot.time_end.strftime('%H:%M')}" for slot in time_slots]
 
         return jsonify({'time_slots': time_slot_strings})
