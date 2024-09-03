@@ -11,6 +11,7 @@ def register_bp(app):
   from blueprints.vet_routes import vet_bp
   from blueprints.vet_profile import vet_profile_bp  # Add vet profile blueprint
 
+
   app.register_blueprint(home_bp)
   app.register_blueprint(vet_bp)
   app.register_blueprint(auth_bp)

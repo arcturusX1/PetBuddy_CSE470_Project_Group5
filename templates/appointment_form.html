@@ -6,7 +6,7 @@
         <h2>Doctor Appointment Form</h2>
         <form method="POST">
             {{ form.hidden_tag() }}
-
+            {{ form.vet_id(id="vet-id", readonly=True)}}
             <div class="form-group">
                 {{ form.vet_name.label(class="form-label") }}
                 {{ form.vet_name(class="form-control", readonly=True) }}
@@ -34,7 +34,7 @@
 
             <div class="form-group">
                 {{ form.time.label(class="form-label") }}
-                {{ form.time(class="form-control", id="time-picker", placeholder="Select Time")}}
+                {{ form.time(class="form-control", id="time-select", placeholder="Select Time")}}
                 </select>
             </div>
 
@@ -45,7 +45,7 @@
         </div>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const availableDays = {{ days | tojson | safe }};
+                const availableDays = {{ day | tojson | safe }};
                 
                 const dayNameToIndex = {
                     "Sunday": 0,
@@ -58,6 +58,9 @@
                 };
 
                 const enabledDays = availableDays.map(day => dayNameToIndex[day]);
+                const indexToDayName = Object.fromEntries(
+                    Object.entries(dayNameToIndex).map(([key, value]) => [value, key])
+                );
 
                 flatpickr("#date-picker", {
                     enable: [
@@ -70,24 +73,53 @@
                     onChange: function(selectedDates, dateStr, instance) {
                         const selectedDate = selectedDates[0];
                         const dayIndex = selectedDate.getDay();
-                        fetchTimeSlots(dateStr, dayIndex, vet_id);
+                        const dayName = indexToDayName[dayIndex];
+                        const vetId = document.getElementById('vet-id').value;
+                        console.log(vetId)
+                        fetchTimeSlots(vetId, dateStr, dayName);
                     }
                 });
             });
-            function fetchTimeSlots(date, dayIndex, vet_id) {
-                fetch(`/get_time_slots?date=${date}&day_index=${dayIndex}$vet_id=${vet_id}`)
-                    .then(response => response.json())
+            function fetchTimeSlots(vetId, date, dayName) {
+                const timeSelect = document.getElementById('time-select');
+                
+                if (!timeSelect){
+                    console.error('timeselect not found');
+                    return;
+                }
+
+                fetch(`/get_time_slots?vetId=${vetId}&date=${date}&dayName=${dayName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching time slots: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        const timeSelect = document.getElementById('time-select');
                         timeSelect.innerHTML = '';
                         data.time_slots.forEach(slot => {
+                            const [startTime, endTime] = slot.split(' - '); // Split the time slot string
+                            const startHours = parseInt(startTime.split(':')[0]);
+                            const startMinutes = parseInt(startTime.split(':')[1]);
+                            const endHours = parseInt(endTime.split(':')[0]);
+                            const endMinutes = parseInt(endTime.split(':')[1]);
+                            const startDate = new Date(0, 0, 0, startHours, startMinutes);
+                            const endDate = new Date(0, 0, 0, endHours, endMinutes);
+                            
                             const option = document.createElement('option');
-                            option.value = slot;
-                            option.textContent = slot;
+                            
+                            option.value = `${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}`; // or a unique ID
+                            option.textContent = `${formatTime(startDate)} - ${formatTime(endDate)}`;
                             timeSelect.appendChild(option);
                         });
                     })
-                    .catch(error => console.error('Error fetching time slots:', error));
+                .catch(error => console.error('Error fetching time slots:', error));
+            }
+            function formatTime(time) {
+                const hours = time.getHours();
+                const minutes = time.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
             }
         </script>
     </body>
