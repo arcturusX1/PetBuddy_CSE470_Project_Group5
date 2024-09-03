@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <body>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/flatpickr_stlye.css')}}"?>
     <div class="form-container">
         <h2>Doctor Appointment Form</h2>
         <form method="POST">
@@ -28,13 +29,12 @@
 
             <div class="form-group">
                 {{ form.date.label(class="form-label") }}
-                {{ form.date(class="form-control", id="date-picker") }}
+                {{ form.date(class="form-control", id="date-picker", placeholder="Select a Date") }}
             </div>
 
             <div class="form-group">
                 {{ form.time.label(class="form-label") }}
-                <select id="time-select" name="time" class="form-control" required>
-                    <option value="">Select a time</option>
+                {{ form.time(class="form-control", id="time-picker", placeholder="Select Time")}}
                 </select>
             </div>
 
@@ -43,6 +43,53 @@
             </div>
         </form>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const availableDays = {{ days | tojson | safe }};
+                
+                const dayNameToIndex = {
+                    "Sunday": 0,
+                    "Monday": 1,
+                    "Tuesday": 2,
+                    "Wednesday": 3,
+                    "Thursday": 4,
+                    "Friday": 5,
+                    "Saturday": 6
+                };
+
+                const enabledDays = availableDays.map(day => dayNameToIndex[day]);
+
+                flatpickr("#date-picker", {
+                    enable: [
+                        function(date) {
+                            return enabledDays.includes(date.getDay());
+                        }
+                    ],
+                    dateFormat: "Y-m-d",
+                    disableMobile: true,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        const selectedDate = selectedDates[0];
+                        const dayIndex = selectedDate.getDay();
+                        fetchTimeSlots(dateStr, dayIndex, vet_id);
+                    }
+                });
+            });
+            function fetchTimeSlots(date, dayIndex, vet_id) {
+                fetch(`/get_time_slots?date=${date}&day_index=${dayIndex}$vet_id=${vet_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const timeSelect = document.getElementById('time-select');
+                        timeSelect.innerHTML = '';
+                        data.time_slots.forEach(slot => {
+                            const option = document.createElement('option');
+                            option.value = slot;
+                            option.textContent = slot;
+                            timeSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching time slots:', error));
+            }
+        </script>
     </body>
 </div>
 {% endblock %}

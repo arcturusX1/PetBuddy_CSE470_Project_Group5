@@ -78,7 +78,7 @@ class AppointmentForm(FlaskForm):
     fees = StringField('Consultation Fees ($)',
                        validators=[DataRequired()])
     date = DateField('Appointment Date', validators=[DataRequired()])
-    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()])
+    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()], render_kw={"placeholder":"Select Time"})
     submit = SubmitField('Submit')
 
 class AddPetForm(FlaskForm):
