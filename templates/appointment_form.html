@@ -87,7 +87,7 @@
                     console.error('timeselect not found');
                     return;
                 }
-
+                
                 fetch(`/get_time_slots?vetId=${vetId}&date=${date}&dayName=${dayName}`)
                     .then(response => {
                         if (!response.ok) {

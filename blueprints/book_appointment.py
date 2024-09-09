@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from flask import Blueprint, jsonify, render_template, request, jsonify
-from flask_login import current_user
+from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for
+from flask_login import current_user, login_required
 
 from model.database import Appointment, VetAvailability, Vet, db
 
@@ -63,7 +63,8 @@ def book_appointment():
     # For GET requests, render the HTML template
     return render_template('book_appointment.html', vets=[])
 
-@book_appointment_bp.route('/create_appointment<int:vet_id>', methods=['GET', 'POST'])
+@book_appointment_bp.route('/create_appointment/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
 def create_appointment(vet_id): #need to hide this ^ vet_id in the url
     vet = Vet.query.filter_by(id=vet_id).first()
     day = get_days(vet_id)
@@ -72,20 +73,22 @@ def create_appointment(vet_id): #need to hide this ^ vet_id in the url
     form.vet_id.data = vet_id
     
 
-    
     if form.validate_on_submit():
-        date = form.date.data
-        time = form.time.date
-        # user_id = current_user.id
-        # date_time = datetime.combine(form.date.data, form.time.data)
-        # appointment = Appointment(
-        #     date_time=date_time,
-        #     vet_id=vet_id,
-        #     user_id=current_user.id
-        # )
-        # db.session.add(appointment)
-        # db.session.commit()
-        # print(f'Appointment for user {current_user.id} at  for {vet.id}')
+        try:
+            user_id = current_user.id
+            start_time, end_time = make_datetime(form.time.data)
+            appointment = Appointment(
+                start_time = datetime.combine(form.date.data, start_time),
+                end_time = datetime.combine(form.date.data, end_time),
+                vet_id=vet_id,
+                user_id=current_user.id
+            )
+            db.session.add(appointment)
+            db.session.commit()
+            print(f'Appointment {appointment.id} for user {current_user.id} for vet {vet.id}')
+            return redirect(url_for('meet_event_bp.confirm_event', appt_id = appointment.id))
+        except Exception as e:
+            print(f'{e}')
     else:
         print(form.errors)
     
@@ -97,6 +100,13 @@ def get_days(vet_id):
     ).filter_by(vet_id=vet_id).all()
     days = [day[0] for day in days]
     return days
+
+def make_datetime(string):
+    start_time, end_time = string.split(' - ')
+    start_time = datetime.strptime(start_time, "%I:%M:%S %p").time()
+    end_time = datetime.strptime(end_time, "%I:%M:%S %p").time()
+    return start_time, end_time
+
 
 @book_appointment_bp.route('/get_time_slots', methods=['GET'])
 def get_time_slots():
@@ -112,6 +122,7 @@ def get_time_slots():
         ).filter_by(vet_id = vet_id, day = day_name)
 
         time_slot_strings = [f"{slot.time_start.strftime('%H:%M')} - {slot.time_end.strftime('%H:%M')}" for slot in time_slots]
+        print(time_slot_strings)
 
         return jsonify({'time_slots': time_slot_strings})
     

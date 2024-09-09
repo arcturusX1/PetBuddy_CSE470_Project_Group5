@@ -106,7 +106,8 @@ class VetReview(db.Model):
 class Appointment(db.Model):
     __tablename__ = 'appointments'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    date_time = db.Column(db.DateTime, default = func.now(), nullable=False)
+    start_time = db.Column(db.DateTime, default = func.now(), nullable=False)
+    end_time = db.Column(db.DateTime, default = func.now(), nullable=False)
     vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
