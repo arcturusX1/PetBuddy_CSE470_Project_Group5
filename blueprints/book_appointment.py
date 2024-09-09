@@ -1,11 +1,14 @@
 from datetime import datetime
 
-from flask import Blueprint, jsonify, render_template, request
-from flask_login import current_user
+from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for
+from flask_login import current_user, login_required
 
-from model.database import Appointment, Vet, db
+from model.database import Appointment, VetAvailability, Vet, db
 
 from .forms import AppointmentForm
+
+import logging
+import json
 
 book_appointment_bp = Blueprint('book_appointment_bp', __name__)
 
@@ -57,40 +60,71 @@ def book_appointment():
     
             return jsonify({'vets': available_vets})
 
-
-            
-        
-
     # For GET requests, render the HTML template
     return render_template('book_appointment.html', vets=[])
 
-@book_appointment_bp.route('/create_appointment<int:vet_id>', methods=['GET', 'POST'])
+@book_appointment_bp.route('/create_appointment/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
 def create_appointment(vet_id): #need to hide this ^ vet_id in the url
-    
     vet = Vet.query.filter_by(id=vet_id).first()
+    day = get_days(vet_id)
     form = AppointmentForm(obj=vet) #sends default data to the formx
+    form.vet_name.data = f'{vet.first_name} {vet.last_name}'#fetching first_name, last_name and concatting them. 
+    form.vet_id.data = vet_id
     
+
     if form.validate_on_submit():
-        form.vet_name.data = f'{vet.first_name} {vet.last_name}' #fetching first_name, last_name and concatting them. 
-        date_time_str = f'{form.date.data} {form.time.data}'
-        date_time = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
-        vet_id = vet_id
-        user_id = current_user.id
-
-        appointment = Appointment(
-            date_time = date_time_obj,
-            vet_id = selected_vet_id,
+        try:
             user_id = current_user.id
-        )
-        db.session.add(appointment)
-        db.session.commit()
-        print(f'Appointment for user {current_user.id} at {date_time_obj} for {vet.id}')
-        #     return jsonify({'message': 'Appointment booked successfully', 'appointment_id': Appointment.id}), 201
-        # except ValueError as e:
-        #     return jsonify({'error': f'Invalid date or time format: {str(e)}'}), 400
-        # except Exception as e:
-        #     db.session.rollback()
-        #     return jsonify({'error': f'Failed to create appointment: {str(e)}'}), 500
-
-    return render_template('appointment_form.html', form=form)
+            start_time, end_time = make_datetime(form.time.data)
+            appointment = Appointment(
+                start_time = datetime.combine(form.date.data, start_time),
+                end_time = datetime.combine(form.date.data, end_time),
+                vet_id=vet_id,
+                user_id=current_user.id
+            )
+            db.session.add(appointment)
+            db.session.commit()
+            print(f'Appointment {appointment.id} for user {current_user.id} for vet {vet.id}')
+            return redirect(url_for('meet_event_bp.confirm_event', appt_id = appointment.id))
+        except Exception as e:
+            print(f'{e}')
+    else:
+        print(form.errors)
     
+    return render_template('appointment_form.html', form=form, day=day, vet_id=vet_id)
+
+def get_days(vet_id):
+    days = VetAvailability.query.with_entities(
+        VetAvailability.day
+    ).filter_by(vet_id=vet_id).all()
+    days = [day[0] for day in days]
+    return days
+
+def make_datetime(string):
+    start_time, end_time = string.split(' - ')
+    start_time = datetime.strptime(start_time, "%I:%M:%S %p").time()
+    end_time = datetime.strptime(end_time, "%I:%M:%S %p").time()
+    return start_time, end_time
+
+
+@book_appointment_bp.route('/get_time_slots', methods=['GET'])
+def get_time_slots():
+    date = request.args.get('date')
+    day_name = request.args.get('dayName')
+    vet_id = request.args.get('vetId')
+    
+    # Query the database for time slots on the given date and day index
+    try:
+        time_slots = VetAvailability.query.with_entities(
+            VetAvailability.time_start,
+            VetAvailability.time_end
+        ).filter_by(vet_id = vet_id, day = day_name)
+
+        time_slot_strings = [f"{slot.time_start.strftime('%H:%M')} - {slot.time_end.strftime('%H:%M')}" for slot in time_slots]
+        print(time_slot_strings)
+
+        return jsonify({'time_slots': time_slot_strings})
+    
+    except Exception as e:
+        return jsonify({'error': 'Internal Server Error'}), 500

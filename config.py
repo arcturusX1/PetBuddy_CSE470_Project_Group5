@@ -38,6 +38,8 @@ def init_app(app):
     login_manager.login_view = 'auth_bp.login'
     login_manager.login_message = "You need to be logged in"
     login_manager.login_message_category = "warning"
+    login_manager.session_protection = "strong"
+    login_manager.use_session_for_next = True
     login_manager.init_app(app) #loging_manager inti
     db.init_app(app) #db init
     migrate.init_app(app, db) #db migrate init
@@ -58,7 +60,7 @@ def init_app(app):
 
     # Set up logging
     import logging
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     return app
 
