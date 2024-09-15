@@ -9,6 +9,7 @@ from wtforms import (
     StringField,
     SubmitField,
     TimeField,
+    HiddenField
 )
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
@@ -72,13 +73,14 @@ class AddPrescriptionForm(FlaskForm):
     submit = SubmitField('Add Prescription')
 
 class AppointmentForm(FlaskForm):
+    vet_id = HiddenField('vet_id')
     vet_name = StringField('Veterinarian', validators=[DataRequired()])
     speciality = StringField('Specialty', validators=[DataRequired()])
     workplace = StringField('Workplace', validators=[DataRequired()])
     fees = StringField('Consultation Fees ($)',
                        validators=[DataRequired()])
     date = DateField('Appointment Date', validators=[DataRequired()])
-    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()])
+    time = SelectField('Appointment Time', choices=[], validators=[DataRequired()], validate_choice=False)
     submit = SubmitField('Submit')
 
 class AddPetForm(FlaskForm):

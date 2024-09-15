@@ -1,0 +1,42 @@
+
+/* Increase the visibility of greyed-out dates */
+.flatpickr-day.disabled {
+color: #a0a0a0; /* Adjust the color to a more visible grey */
+background-color: #f0f0f0; /* Slightly darker background for disabled dates */
+opacity: 1; /* Make sure the opacity is set to full */
+cursor: not-allowed; /* Show a "not-allowed" cursor on hover */
+}
+
+/* Style the selected date */
+.flatpickr-day.selected {
+background-color: #007bff; /* Primary color */
+color: white; /* White text */
+}
+
+/* Style hovered dates */
+.flatpickr-day:hover {
+background-color: #007bff; /* Primary color */
+color: white; /* White text */
+}
+
+/* Custom styles for the calendar header */
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+color: #007bff; /* Customize the color of navigation arrows */
+}
+
+/* Customize the month and year display */
+.flatpickr-current-month {
+font-weight: bold; /* Bold font for the current month and year */
+color: #333; /* Darker text color */
+}
+
+/* Style for the weekday names (Sun, Mon, Tue, etc.) */
+.flatpickr-weekday {
+color: #555; /* Slightly darker grey for weekdays */
+}
+
+/* Optional: Increase the size of the calendar for better visibility */
+.flatpickr-calendar {
+font-size: 1.1em; /* Adjust the font size */
+}
