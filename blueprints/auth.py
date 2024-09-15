@@ -1,8 +1,8 @@
-from flask import Blueprint, flash, redirect, render_template, url_for, abort, current_app
+from flask import Blueprint, flash, redirect, render_template, url_for, abort, current_app, request
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from functools import wraps
-
+from urllib.parse import urlparse, urljoin
 from blueprints.forms import LoginForm, UserForm
 from model.database import User, Vet, db
 
@@ -14,6 +14,19 @@ login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+# def is_safe_url(target):
+#     ref_url = urlparse(request.host_url)
+#     test_url = urlparse(urljoin(request.host_url, target))
+#     return (
+#         test_url.scheme in ('http', 'https') and
+#         ref_url.netloc == test_url.netloc
+#     )
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 # Route for the login page
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -27,8 +40,14 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
-            flash('Login Successful!', 'success')
-            return redirect(url_for('home_bp.index'))
+            
+            next_page = request.args.get('next')
+            if next_page and is_safe_url(next_page):
+                flash('Login Successful!', 'success')
+                return(redirect(next_page))
+            else:
+                flash('Login Successful!', 'success')
+                return redirect(url_for('home_bp.index'))
         else:
             flash('Invalid email or password', 'danger')
 

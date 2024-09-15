@@ -26,7 +26,8 @@
                 },
                 body: JSON.stringify({
                     date: selectedDate,
-                    time: selectedTime
+                    time: selectedTime,
+                    action: 'filter'
                 })
             })
             .then(response => {
@@ -55,7 +56,7 @@
                                 </td>
                                 <td>${vet.rating}</td>
                                 <td><a href="mailto:${vet.contact_info}">${vet.contact_info}</a></td>
-                                <td><button class="btn btn-primary" onclick="createAppointment(${vet.id})">Book an Appointment</button></td>
+                                <td><button class="btn btn-primary" onclick="createAppointment(${vet.id}, '${vet.first_name} ${vet.last_name}', '${vet.speciality}', '${vet.workplace}', ${vet.fees})">Book an Appointment</button></td>
                             </tr>
                         `;
                         vetList.innerHTML += vetItem;
@@ -71,33 +72,14 @@
         }
 
 
-        function createAppointment(vetId) {
+        function createAppointment(vetId, vetName, vetSpeciality, vetWorkplace, vetFees) {
             var selectedDate = document.getElementById('date').value;
             var selectedTime = document.getElementById('time').value;
 
-            fetch(`/create_appointment/${vetId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({
-                    date: selectedDate,
-                    time: selectedTime
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Appointment created successfully!');
-                } else {
-                    alert('Failed to create appointment.');
-                }
-            })
-            .catch(error => {
-                console.error('Error creating appointment:', error);
-                alert('An error occurred. Please try again later.');
-            });
+            var url = `/appointment_form?vet_id=${vetId}&date=${selectedDate}&time=${selectedTime}&name=${encodeURIComponent(vetName)}&speciality=${encodeURIComponent(vetSpeciality)}&workplace=${encodeURIComponent(vetWorkplace)}&fees=${vetFees}`;
+            window.location.href = url;
         }
+
     </script>
 </head>
 <body>
