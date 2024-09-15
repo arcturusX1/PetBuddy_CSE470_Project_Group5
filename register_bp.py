@@ -9,7 +9,8 @@ def register_bp(app):
   from blueprints.patient_profile import patient_profile_bp
   from blueprints.prescription import prescription_bp
   from blueprints.vet_routes import vet_bp
-  from blueprints.vet_profile import vet_profile_bp  # Add vet profile blueprint
+  from blueprints.vet_profile import vet_profile_bp
+  from blueprints.payment import payment_bp
 
   app.register_blueprint(home_bp)
   app.register_blueprint(vet_bp)
@@ -21,4 +22,5 @@ def register_bp(app):
   app.register_blueprint(mail_bp)
   app.register_blueprint(book_appointment_bp)
   app.register_blueprint(google_meet_bp)
-  app.register_blueprint(vet_profile_bp)  # Register vet profile blueprint
+  app.register_blueprint(vet_profile_bp)
+  app.register_blueprint(payment_bp, url_prefix='/payment')
