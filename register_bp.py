@@ -22,5 +22,5 @@ def register_bp(app):
   app.register_blueprint(mail_bp)
   app.register_blueprint(book_appointment_bp)
   app.register_blueprint(google_oauth_bp)
-  app.regist_blueprint(meet_event_bp)
+  app.register_blueprint(meet_event_bp)
   app.register_blueprint(vet_profile_bp)  # Register vet profile blueprint
