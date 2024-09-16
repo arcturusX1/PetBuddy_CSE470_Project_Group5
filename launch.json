@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [
+                "run",
+                "--debug",
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "Running on (https?://\\S+|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+:[0-9]+)",
+                "uriFormat": "%s"
+            }
+        }
+    ]
+}

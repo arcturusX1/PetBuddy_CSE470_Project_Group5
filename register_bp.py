@@ -12,7 +12,6 @@ def register_bp(app):
   from blueprints.vet_routes import vet_bp
   from blueprints.vet_profile import vet_profile_bp  # Add vet profile blueprint
 
-
   app.register_blueprint(home_bp)
   app.register_blueprint(vet_bp)
   app.register_blueprint(auth_bp)
@@ -22,6 +21,5 @@ def register_bp(app):
   app.register_blueprint(appointment_showcase_bp)
   app.register_blueprint(mail_bp)
   app.register_blueprint(book_appointment_bp)
-  app.register_blueprint(google_oauth_bp)
+  app.register_blueprint(google_meet_bp)
   app.register_blueprint(vet_profile_bp)  # Register vet profile blueprint
-  app.register_blueprint(meet_event_bp)
