@@ -59,11 +59,12 @@ class Vet(db.Model):
     fees = db.Column(db.Float)
     rating = db.Column(db.Float)
     contact_info = db.Column(db.String(100))
-    availability = db.Column(JSONB)
+    availability_json = db.Column(JSONB)
 
     user = db.relationship('User', back_populates='vet')  # Backref to the User model
     reviews = db.relationship('VetReview', back_populates='vet', cascade="all, delete-orphan")
     appointments = db.relationship('Appointment', back_populates='vet')
+    availability = db.relationship('VetAvailability', back_populates='vet', cascade='all, delete-orphan')
 
     def set_availability(self, availability_dict):
         self.availability = availability_dict
@@ -74,6 +75,17 @@ class Vet(db.Model):
     def __repr__(self):
         return f'<Vet: ID:{self.id} {self.first_name} {self.last_name}>'
 
+class VetAvailability(db.Model):
+    """Stores Vet Availability in days and timeslots. Shows if a slot is booked or not."""
+    __tablename__ = 'availability'
+    id = db.Column(db.Integer, primary_key=True)
+    vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
+    day=db.Column(db.Text, nullable=False)
+    time_start=db.Column(db.Time, nullable=False)
+    time_end=db.Column(db.Time, nullable=False) 
+    booked=db.Column(db.Boolean, nullable=False, default=False)
+
+    vet = db.relationship('Vet', back_populates='availability')
 
 # VetReview class for veterinarian reviews
 class VetReview(db.Model):
@@ -94,7 +106,8 @@ class VetReview(db.Model):
 class Appointment(db.Model):
     __tablename__ = 'appointments'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    date_time = db.Column(db.DateTime, default = func.now(), nullable=False)
+    start_time = db.Column(db.DateTime, default = func.now(), nullable=False)
+    end_time = db.Column(db.DateTime, default = func.now(), nullable=False)
     vet_id = db.Column(db.Integer, db.ForeignKey('vets.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 

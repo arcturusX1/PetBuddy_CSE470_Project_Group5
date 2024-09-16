@@ -91,9 +91,9 @@
                             <td>{{ vet.experience }}</td>
                             <td>{{ vet.fees }}</td>
                             <td>
-                                {% if vet.availability %}
+                                {% if vet.availability_json %}
                                 <ul style="list-style-type: none; padding-left: 0;">
-                                    {% for day, slots in vet.availability.items() %}
+                                    {% for day, slots in vet.availability_json.items() %}
                                         <li><strong>{{ day.capitalize() }}:</strong>
                                             <ul style="list-style-type: none; padding-left: 0;">
                                                 {% for slot in slots %}
