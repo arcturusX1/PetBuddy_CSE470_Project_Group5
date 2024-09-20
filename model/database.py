@@ -1,8 +1,7 @@
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
-
+from sqlalchemy.dialects.postgresql import JSONB
 
 db = SQLAlchemy()
 

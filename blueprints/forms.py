@@ -2,16 +2,24 @@ from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
     DateField,
+    DecimalField,
     FloatField,
+    HiddenField,
     IntegerField,
     PasswordField,
     SelectField,
     StringField,
     SubmitField,
     TimeField,
-    HiddenField
 )
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    Length,
+    NumberRange,
+    Optional,
+)
 
 
 class UserForm(FlaskForm):
@@ -89,3 +97,13 @@ class AddPetForm(FlaskForm):
     breed = StringField('Breed', validators=[Optional()])
     age = IntegerField('Age', validators=[Optional()])
     submit = SubmitField('Add Pet')
+
+class PaymentForm(FlaskForm):
+    amount = DecimalField('Amount (BDT)', validators=[DataRequired(), NumberRange(min=1)])
+    customer_name = StringField('Name', validators=[DataRequired()])
+    customer_email = StringField('Email', validators=[DataRequired(), Email()])
+    customer_phone = StringField('Phone', validators=[DataRequired()])
+    payment_method = SelectField('Select Payment Method', 
+                                 choices=[('card', 'Card'), ('bkash', 'bKash')], 
+                                 validators=[DataRequired()])
+    submit = SubmitField('Pay Now')
