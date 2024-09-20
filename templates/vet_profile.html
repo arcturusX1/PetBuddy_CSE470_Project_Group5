@@ -1,6 +1,6 @@
 {% include 'base.html' %}
 
-{% block title %}{% endblock %}
+{% block title %}Vet Profile{% endblock %}
 
 {% block content %}
 <head>
@@ -24,7 +24,7 @@
         .main-container {
             display: flex;
             max-width: 1200px;
-            margin: 80px auto 20px; /* Top margin to account for the fixed navbar */
+            margin: 80px auto 20px;
             padding: 20px;
         }
 
@@ -65,32 +65,40 @@
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* Flexbox container for content boxes */
-        .content-box-container {
+        .chat-container {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .chat-input {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            padding: 10px;
         }
 
-        /* Styling for content boxes */
-        .content-box {
-            background-color: #f9f9f9;
-            border-radius: 15px;
-            padding: 20px;
+        .chat-input input {
             flex: 1;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            text-align: center;
+            padding: 8px;
+            margin-right: 10px;
         }
 
-        .content-box:hover {
-            background-color: #e0f7fa;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Header styling */
-        header {
-            text-align: center;
-            margin-bottom: 20px;
+        .chat-input button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -103,6 +111,7 @@
         <div class="sidebar">
             <a href="{{ url_for('home_bp.index') }}">Home</a>
             <a href="{{ url_for('vet_profile_bp.attend_appointments', vet_id=vet.id) }}">Attend Appointments</a>
+            <a href="chathost_bp.chathost">Incoming Chats</a>
         </div>
 
         <!-- Main Content -->
@@ -111,18 +120,50 @@
                 <h1>Veterinarian Profile</h1>
             </header>
             <div class="content-box-container">
-                <!-- Vet's Name Box -->
                 <div class="content-box">
                     <h2>{{ vet.first_name }} {{ vet.last_name }}</h2>
                 </div>
 
-                <!-- Vet's Rating Box -->
                 <div class="content-box">
                     <h3>Rating: {{ vet.rating }}</h3>
                 </div>
             </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-container">
+                <h3>Incoming Chats</h3>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- SocketIO JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('connect', function() {
+            console.log('Connected to chat server');
+        });
+
+        socket.on('message', function(data) {
+            var chatMessages = document.getElementById('chat-messages');
+            var newMessage = document.createElement('div');
+            newMessage.textContent = data.username + ': ' + data.msg;
+            chatMessages.appendChild(newMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        document.getElementById('send-btn').addEventListener('click', function() {
+            var message = document.getElementById('chat-input').value;
+            socket.emit('message', {msg: message});
+            document.getElementById('chat-input').value = '';
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,46 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Incoming Chat{% endblock %}
+
+    {% block content %}
+    <div class="chat-container">
+        <h2>Chat with Users</h2>
+        <div id="messages"></div>
+        <input id="message_input" type="text" placeholder="Type your message here...">
+        <button id="send_message">Send</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // Join the room
+        socket.emit('join', {'room': 'vet_chat_room'});
+
+        // Handle new messages
+        socket.on('message', function(data) {
+            var messageBox = document.getElementById('messages');
+            messageBox.innerHTML += '<p><strong>' + data.username + ':</strong> ' + data.msg + '</p>';
+        });
+
+        // Send message
+        document.getElementById('send_message').onclick = function() {
+            var message = document.getElementById('message_input').value;
+            socket.emit('message', {'msg': message});
+            document.getElementById('message_input').value = '';
+        };
+    </script>
+    {% endblock %}
+
+</body>
+</html>
+ -->
