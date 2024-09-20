@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ pet.name }}'s Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='user_dashboard/patient_profile.css') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
+{% extends "base.html" %}
 
+{% block title %}{{ pet.name }}'s Profile{% endblock %}
+
+{% block content %}
+    <style>
         .container {
             display: flex;
             flex-direction: column;
@@ -72,41 +63,46 @@
         /* Buttons */
         .button-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             gap: 15px;
             margin-top: 20px;
+            width: 100%;
         }
 
         .profile-button {
             background-color: #4CAF50;
             color: white;
-            padding: 15px 25px;
+            padding: 15px;
             border: none;
             border-radius: 30px;
             font-size: 1em;
             cursor: pointer;
             text-decoration: none;
             transition: background-color 0.3s;
+            width: 100%;
+            text-align: center;
         }
 
         .profile-button:hover {
             background-color: #45a049;
         }
 
-        .edit-pet-button {
-            background-color: #008CBA;
+        .prescription-button {
+            background-color: #FF5722;
             color: white;
-            padding: 15px 25px;
+            padding: 15px;
             border: none;
             border-radius: 30px;
             font-size: 1em;
             cursor: pointer;
             text-decoration: none;
             transition: background-color 0.3s;
+            width: 100%;
+            text-align: center;
         }
 
-        .edit-pet-button:hover {
-            background-color: #007B9A;
+        .prescription-button:hover {
+            background-color: #E64A19;
         }
 
         /* Responsive design */
@@ -120,8 +116,7 @@
             }
         }
     </style>
-</head>
-<body>
+
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">
@@ -140,9 +135,8 @@
 
         <!-- Buttons -->
         <div class="button-container">
-            <a href="{{ url_for('patient_profile.book_appointment', pet_id=pet.id) }}" class="profile-button">Book Appointment</a>
-            <a href="{{ url_for('patient_profile.edit_pet', pet_id=pet.id) }}" class="edit-pet-button">Edit Pet</a>
+            <a href="{{ url_for('book_appointment_bp.book_appointment', pet_id=pet.id) }}" class="profile-button">Book Appointment</a>
+            <a href="{{ url_for('prescriptions_bp.view_prescriptions') }}" class="prescription-button">Prescriptions</a>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}

@@ -45,3 +45,13 @@ def add_pet():
 def pet_list():
     # Fetch the current user's pets and pass them to the template
     return render_template("pet_list.html", pets=current_user.pets)
+
+# Route to display an individual pet's profile
+@patient_profile_bp.route('/pet_profile/<int:pet_id>')
+@login_required
+def pet_profile(pet_id):
+    # Fetch the pet by ID and ensure it belongs to the current user
+    pet = Pet.query.filter_by(id=pet_id, user_id=current_user.id).first_or_404()
+
+    # Render the pet profile page
+    return render_template('pet_profile.html', pet=pet)

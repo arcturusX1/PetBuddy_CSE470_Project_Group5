@@ -9,7 +9,7 @@ def register_bp(app):
   from blueprints.meet_event import meet_event_bp
   from blueprints.patient_profile import patient_profile_bp
   from blueprints.payment import payment_bp
-  from blueprints.prescription import prescription_bp
+  from blueprints.prescription import prescriptions_bp  # Corrected import
   from blueprints.vet_profile import vet_profile_bp  # Add vet profile blueprint
   from blueprints.vet_routes import vet_bp
 
@@ -17,7 +17,7 @@ def register_bp(app):
   app.register_blueprint(vet_bp)
   app.register_blueprint(auth_bp)
   app.register_blueprint(patient_profile_bp)
-  app.register_blueprint(prescription_bp)
+  app.register_blueprint(prescriptions_bp)  # Corrected blueprint registration
   app.register_blueprint(appointment_bp)
   app.register_blueprint(appointment_showcase_bp)
   app.register_blueprint(mail_bp)
