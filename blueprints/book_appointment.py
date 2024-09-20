@@ -93,7 +93,7 @@ def create_appointment(vet_id):
         except Exception as e:
             logging.error(f'Error creating appointment: {e}')
 
-    return render_template('appointment_form.html', form=form, day=day, vet_id=vet_id, pet=pet)
+    return render_template('appointment_form.html', form=form, vet_id=vet.id)
 
 # Utility function to get available days for a vet
 def get_days(vet_id):
