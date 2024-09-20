@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Your Pets{% endblock %}
+
+{% block content %}
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #008CBA;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        .pet-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .pet-card h3 {
+            margin: 0;
+            font-size: 1.4em;
+            color: #333;
+        }
+
+        .pet-card p {
+            margin: 5px 0 0;
+            color: #555;
+        }
+
+        .add-pet-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        .add-pet-button:hover {
+            background-color: #007B9A;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+    <div class="container">
+        <!-- Page header -->
+        <div class="header">
+            <h1>Your Pets</h1>
+        </div>
+
+        <!-- List of Pets -->
+        {% if pets %}
+            {% for pet in pets %}
+            <div class="pet-card">
+                <h3>{{ pet.name }}</h3>
+                <p>{{ pet.animal_type }}, {{ pet.breed }} - Age: {{ pet.age }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>You haven't added any pets yet.</p>
+        {% endif %}
+
+        <!-- Add Pet Button -->
+        <a href="{{ url_for('patient_profile.add_pet') }}" class="add-pet-button">Add a New Pet</a>
+    </div>
+{% endblock %}

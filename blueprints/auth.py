@@ -5,7 +5,9 @@ from functools import wraps
 from urllib.parse import urlparse, urljoin
 from blueprints.forms import LoginForm, UserForm
 from model.database import User, Vet, db
+import logging
 
+# Define the auth blueprint
 auth_bp = Blueprint('auth_bp', __name__)
 
 # Initialize the login manager
@@ -14,14 +16,6 @@ login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-# def is_safe_url(target):
-#     ref_url = urlparse(request.host_url)
-#     test_url = urlparse(urljoin(request.host_url, target))
-#     return (
-#         test_url.scheme in ('http', 'https') and
-#         ref_url.netloc == test_url.netloc
-#     )
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -40,11 +34,11 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
-            
+
             next_page = request.args.get('next')
             if next_page and is_safe_url(next_page):
                 flash('Login Successful!', 'success')
-                return(redirect(next_page))
+                return redirect(next_page)
             else:
                 flash('Login Successful!', 'success')
                 return redirect(url_for('home_bp.index'))
@@ -129,6 +123,6 @@ def profile():
     if current_user.is_vet:
         return redirect(url_for('vet_profile_bp.vet_profile'))
     elif current_user.is_user:
-        return redirect(url_for('patient_profile_bp.patient_profile'))
+        return redirect(url_for('patient_profile.patient_profile'))  # Redirect to the updated route
     else:
         return "User type not recognized", 403

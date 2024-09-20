@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ pet.name }}'s Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_dashboard/patient_profile.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Page header */
+        .page-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        /* Pet profile card */
+        .pet-profile-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .pet-profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pet-profile-card h2 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        .pet-profile-card p {
+            margin: 5px 0;
+            color: #777;
+        }
+
+        .pet-info {
+            margin: 10px 0;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .profile-button:hover {
+            background-color: #45a049;
+        }
+
+        .edit-pet-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .edit-pet-button:hover {
+            background-color: #007B9A;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .button-container {
+                flex-direction: column;
+            }
+
+            .page-header, .pet-profile-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>{{ pet.name }}'s Profile</h1>
+        </div>
+
+        <!-- Pet Profile Information -->
+        <div class="pet-profile-card">
+            <h2>{{ pet.name }}</h2>
+            <div class="pet-info">
+                <p><strong>Animal Type:</strong> {{ pet.animal_type }}</p>
+                <p><strong>Breed:</strong> {{ pet.breed }}</p>
+                <p><strong>Age:</strong> {{ pet.age }}</p>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="{{ url_for('patient_profile.book_appointment', pet_id=pet.id) }}" class="profile-button">Book Appointment</a>
+            <a href="{{ url_for('patient_profile.edit_pet', pet_id=pet.id) }}" class="edit-pet-button">Edit Pet</a>
+        </div>
+    </div>
+</body>
+</html>
