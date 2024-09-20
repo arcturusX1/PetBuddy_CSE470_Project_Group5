@@ -68,12 +68,11 @@ def book_appointment(pet_id):
     return render_template('book_appointment.html', pet=pet, vets=[])
 
 # Route to create the appointment
-@book_appointment_bp.route('/create_appointment/<int:vet_id>/<int:pet_id>', methods=['GET', 'POST'])
+@book_appointment_bp.route('/create_appointment/<int:vet_id>', methods=['GET', 'POST'])
 @login_required
-def create_appointment(vet_id, pet_id):
+def create_appointment(vet_id):
     vet = Vet.query.filter_by(id=vet_id).first()
     day = get_days(vet_id)
-    pet = Pet.query.filter_by(id=pet_id, user_id=current_user.id).first_or_404()
 
     form = AppointmentForm(obj=vet)
     form.vet_name.data = f'{vet.first_name} {vet.last_name}'
@@ -87,7 +86,6 @@ def create_appointment(vet_id, pet_id):
                 end_time=datetime.combine(form.date.data, end_time),
                 vet_id=vet_id,
                 user_id=current_user.id,
-                pet_id=pet.id  # Associate the appointment with the pet
             )
             db.session.add(appointment)
             db.session.commit()
