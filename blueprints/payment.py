@@ -1,14 +1,26 @@
-from flask import Blueprint, request, redirect, url_for, jsonify, current_app
-from sslcommerz_lib import SSLCOMMERZ
 import uuid
+
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from sslcommerz_lib import SSLCOMMERZ
+
+from .forms import PaymentForm
 
 # Create the payment blueprint
 payment_bp = Blueprint('payment_bp', __name__)
 
 # Configure the SSLCommerz settings
 sslcommerz_settings = {
-    'store_id': 'your_store_id',
-    'store_pass': 'your_store_pass',
+    'store_id': 'petbu66ed81f7a55af',
+    'store_pass': 'petbu66ed81f7a55af@ssl',
     'issandbox': True  # Change to False when in production
 }
 
@@ -16,49 +28,50 @@ sslcommerz_settings = {
 sslcz = SSLCOMMERZ(sslcommerz_settings)
 
 # Initiate the payment route
-@payment_bp.route('/initiate_payment', methods=['POST'])
+@payment_bp.route('/initiate_payment', methods=['GET', 'POST'])
 def initiate_payment():
-    try:
-        # Create a unique transaction ID for the payment
-        transaction_id = str(uuid.uuid4())
+    form = PaymentForm()
 
-        # Get necessary info from request, like amount and customer details
-        amount = request.form.get('amount')
-        customer_name = request.form.get('customer_name')
-        customer_email = request.form.get('customer_email')
-        customer_phone = request.form.get('customer_phone')
-        payment_method = request.form.get('payment_method')
+    if form.validate_on_submit():
+        try:
+            # Create a unique transaction ID for the payment
+            transaction_id = str(uuid.uuid4())
+    
+            # Get necessary info from request, like amount and customer details
+            amount = request.form.get('amount')
+            customer_name = request.form.get('customer_name')
+            customer_email = request.form.get('customer_email')
+            customer_phone = request.form.get('customer_phone')
+            payment_method = request.form.get('payment_method')
+    
+            # Prepare the payment data
+            payment_data = {
+                'total_amount': amount,
+                'currency': 'BDT',
+                'tran_id': transaction_id,
+                'success_url': url_for('payment_bp.payment_success', _external=True),
+                'fail_url': url_for('payment_bp.payment_failure', _external=True),
+                'cancel_url': url_for('payment_bp.payment_cancel', _external=True),
+                'cus_name': customer_name,
+                'cus_email': customer_email,
+                'cus_phone': customer_phone,
+                'product_name': 'Vet Services',
+                'product_category': 'Services',
+                'product_profile': 'general',
+                'multi_card_name': payment_method
+            }
+    
+            if response['status'] == 'SUCCESS':
+                return redirect(response['GatewayPageURL'])
+            else:
+                flash('Failed to initiate payment', 'error')
 
-        # Prepare the payment data
-        payment_data = {
-            'total_amount': amount,
-            'currency': 'BDT',
-            'tran_id': transaction_id,
-            'success_url': url_for('payment_bp.payment_success', _external=True),
-            'fail_url': url_for('payment_bp.payment_failure', _external=True),
-            'cancel_url': url_for('payment_bp.payment_cancel', _external=True),
-            'cus_name': customer_name,
-            'cus_email': customer_email,
-            'cus_phone': customer_phone,
-            'product_name': 'Vet Services',
-            'product_category': 'Services',
-            'product_profile': 'general',
-            'multi_card_name': payment_method
-        }
+        except Exception as e:
+            current_app.logger.error(f"Payment initiation failed: {e}")
+            flash('Payment initiation error', 'error')
 
-        # Initiate the payment session
-        response = sslcz.createSession(payment_data)
-
-        if response['status'] == 'SUCCESS':
-            # Redirect the user to the payment gateway URL
-            return redirect(response['GatewayPageURL'])
-        else:
-            return jsonify({'error': 'Failed to initiate payment'}), 400
-
-    except Exception as e:
-        current_app.logger.error(f"Payment initiation failed: {e}")
-        return jsonify({'error': 'Payment initiation error'}), 500
-
+    return render_template('payment_form.html', form=form)
+    
 # Payment success route
 @payment_bp.route('/payment_success', methods=['POST'])
 def payment_success():
@@ -98,3 +111,8 @@ def payment_cancel():
     except Exception as e:
         current_app.logger.error(f"Payment cancel handling failed: {e}")
         return jsonify({'error': 'Payment cancel error'}), 500
+
+# @payment_bp.route('/pay', methods=['GET'])
+# def show_payment_form():
+#     form = PaymentForm()
+#     return render_template('payment_form.html', form=form)

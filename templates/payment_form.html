@@ -1,22 +1,20 @@
-<!-- payment.html -->
 <form action="{{ url_for('payment_bp.initiate_payment') }}" method="POST">
+    {{ form.hidden_tag() }}
+    
     <label for="amount">Amount (BDT):</label>
-    <input type="number" name="amount" required><br><br>
+    {{ form.amount(size=20) }}<br><br>
 
     <label for="customer_name">Name:</label>
-    <input type="text" name="customer_name" required><br><br>
+    {{ form.customer_name(size=20) }}<br><br>
 
     <label for="customer_email">Email:</label>
-    <input type="email" name="customer_email" required><br><br>
+    {{ form.customer_email(size=30) }}<br><br>
 
     <label for="customer_phone">Phone:</label>
-    <input type="text" name="customer_phone" required><br><br>
+    {{ form.customer_phone(size=20) }}<br><br>
 
     <label for="payment_method">Select Payment Method:</label>
-    <select name="payment_method" required>
-        <option value="card">Card</option>
-        <option value="bkash">bKash</option>
-    </select><br><br>
+    {{ form.payment_method() }}<br><br>
 
-    <button type="submit">Pay Now</button>
+    {{ form.submit() }}
 </form>
