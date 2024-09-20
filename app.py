@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
+
 from config import init_app
 from register_bp import register_bp
 
