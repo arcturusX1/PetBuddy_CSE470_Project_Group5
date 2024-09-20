@@ -1,14 +1,13 @@
+import json
+import logging
 from datetime import datetime
 
-from flask import Blueprint, jsonify, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from model.database import Appointment, VetAvailability, Vet, db
+from model.database import Appointment, Vet, VetAvailability, db
 
 from .forms import AppointmentForm
-
-import logging
-import json
 
 book_appointment_bp = Blueprint('book_appointment_bp', __name__)
 
