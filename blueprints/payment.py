@@ -36,14 +36,17 @@ def initiate_payment():
         try:
             # Create a unique transaction ID for the payment
             transaction_id = str(uuid.uuid4())
-    
-            # Get necessary info from request, like amount and customer details
+
+            # Get necessary info from the form
             amount = request.form.get('amount')
             customer_name = request.form.get('customer_name')
             customer_email = request.form.get('customer_email')
             customer_phone = request.form.get('customer_phone')
+            customer_address = request.form.get('customer_address')  # Customer Address
+            customer_city = request.form.get('customer_city')  # Customer City
+            customer_country = request.form.get('customer_country')  # Customer Country
             payment_method = request.form.get('payment_method')
-    
+
             # Prepare the payment data
             payment_data = {
                 'total_amount': amount,
@@ -55,22 +58,44 @@ def initiate_payment():
                 'cus_name': customer_name,
                 'cus_email': customer_email,
                 'cus_phone': customer_phone,
+                'cus_add1': customer_address,  # Customer Address
+                'cus_city': customer_city,  # Customer City
+                'cus_country': customer_country,  # Customer Country
                 'product_name': 'Vet Services',
                 'product_category': 'Services',
                 'product_profile': 'general',
-                'multi_card_name': payment_method
+                'multi_card_name': payment_method,
+                'shipping_method': 'NO'
             }
-    
-            if response['status'] == 'SUCCESS':
-                return redirect(response['GatewayPageURL'])
+
+            # Send data to SSLCommerz and get the response
+            response = sslcz.createSession(payment_data)
+
+            # Log the response to debug if needed
+            current_app.logger.info(f"SSLCommerz response: {response}")
+
+            # Check if the response was successful
+            if response.get('status') == 'SUCCESS':
+                # Extract the GatewayPageURL from the response
+                gateway_url = response.get('GatewayPageURL')
+
+                # Redirect the user to the SSLCommerz payment page
+                return redirect(gateway_url)
             else:
+                # If the response indicates failure, log the error and show a message
                 flash('Failed to initiate payment', 'error')
+                current_app.logger.error(f"Payment initiation failed: {response}")
 
         except Exception as e:
+            # Handle and log any exceptions that occur
             current_app.logger.error(f"Payment initiation failed: {e}")
             flash('Payment initiation error', 'error')
 
+    # If form validation fails or no submission, render the form again
     return render_template('payment_form.html', form=form)
+
+
+
     
 # Payment success route
 @payment_bp.route('/payment_success', methods=['POST'])
@@ -111,8 +136,3 @@ def payment_cancel():
     except Exception as e:
         current_app.logger.error(f"Payment cancel handling failed: {e}")
         return jsonify({'error': 'Payment cancel error'}), 500
-
-# @payment_bp.route('/pay', methods=['GET'])
-# def show_payment_form():
-#     form = PaymentForm()
-#     return render_template('payment_form.html', form=form)
