@@ -27,4 +27,4 @@ def register_bp(app):
   app.register_blueprint(meet_event_bp)
   app.register_blueprint(vet_profile_bp)  # Register vet profile blueprint
   app.register_blueprint(payment_bp)
-  app.register_blueprint(api_test_bp)
+  app.register_blueprint(api_test_bp, url_prefix='/api/vets')
