@@ -7,17 +7,21 @@ from .forms import VetFilterForm
 
 vet_bp = Blueprint('vet_bp', __name__)
 
-@vet_bp.route('/vets_list')
+@vet_bp.route('/api/vets', methods=['GET'])
 def show_vets():
     vets = Vet.query.all()
-    specialities = db.session.query(Vet.speciality.distinct()).all()
-    workplaces = db.session.query(Vet.workplace.distinct()).all()
-    form = VetFilterForm()
-    form.update_choices(specialities, workplaces)
-    return render_template('vet_list.html', vets=vets, 
-                           specialities=specialities, 
-                           workplaces=workplaces,
-                          form=form)
+    vets_data = [
+        {
+            'id': vet.id,
+            'first_name': vet.first_name,
+            'last_name': vet.last_name,
+            'speciality': vet.speciality,
+            'workplace': vet.workplace
+        }
+        for vet in vets
+    ]
+    return jsonify(vets_data), 200
+
 
 @vet_bp.route('/vet/<int:vet_id>')
 def vet_profile(vet_id):
