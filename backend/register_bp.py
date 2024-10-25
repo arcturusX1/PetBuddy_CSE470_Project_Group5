@@ -12,6 +12,7 @@ def register_bp(app):
   from blueprints.prescription import prescriptions_bp  # Corrected import
   from blueprints.vet_profile import vet_profile_bp  # Add vet profile blueprint
   from blueprints.vet_routes import vet_bp
+  from blueprints.api_test import api_test_bp
 
   app.register_blueprint(home_bp)
   app.register_blueprint(vet_bp)
@@ -26,3 +27,4 @@ def register_bp(app):
   app.register_blueprint(meet_event_bp)
   app.register_blueprint(vet_profile_bp)  # Register vet profile blueprint
   app.register_blueprint(payment_bp)
+  app.register_blueprint(api_test_bp, url_prefix='/api/vets')

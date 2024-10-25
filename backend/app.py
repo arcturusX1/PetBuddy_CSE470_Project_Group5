@@ -1,11 +1,13 @@
 from flask import Flask, redirect, url_for
 from flask_login import current_user, login_required
+from flask_cors import CORS
 
 from config import init_app
 from register_bp import register_bp
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Initialize configurations, extensions, and create database tables
 init_app(app)
