@@ -107,3 +107,9 @@ class PaymentForm(FlaskForm):
                                  choices=[('card', 'Card'), ('bkash', 'bKash')], 
                                  validators=[DataRequired()])
     submit = SubmitField('Pay Now')
+
+class FormTestForm(FlaskForm):
+    data_text = StringField('data_text', validators=[DataRequired()])
+    data_bool = BooleanField('data_bool')
+    data_int = IntegerField('data_int')
+

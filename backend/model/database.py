@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
+from dataclasses import dataclass
 
 db = SQLAlchemy()
 
@@ -134,3 +135,26 @@ class Prescription(db.Model):
 
     def __repr__(self):
         return f'<Prescription {self.id} for User {self.user_id}>'
+
+# React form testing class
+@dataclass
+class FormTestClass(db.Model):
+    
+    id: int
+    data_text = str
+    data_bool = bool
+    data_int = int
+    
+    __tablename__ = 'form_test'
+    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    data_text = db.Column(db.Text(50), nullable = False)
+    data_bool = db.Column(db.Boolean, nullable = True)
+    data_int = db.Column(db.Integer, nullable = True)
+
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'data_text': self.data_text,
+            'data_bool': self.data_bool,
+            'data_int': self.data_int
+        }
