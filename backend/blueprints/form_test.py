@@ -9,7 +9,7 @@ form_test_ap = Api(form_test_bp)
 
 class FormTestResource(Resource):
     def post(self):
-        form = FormTestForm(meta={'csrf' = False})
+        form = FormTestForm(meta={'csrf': False})
 
         if form.validate_on_submit():
             try:

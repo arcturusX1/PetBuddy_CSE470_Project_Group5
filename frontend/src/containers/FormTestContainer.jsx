@@ -73,7 +73,7 @@ const FormTestContainer = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/users', {
+      const response = await fetch('http://localhost:5000/api/form_test', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -147,7 +147,7 @@ class FormTestClass(db.Model):
     
     __tablename__ = 'form_test'
     id = db.Column(db.Integer, primary_key = True, nullable = False)
-    data_text = db.Column(db.Text(50), nullable = False)
+    data_text = db.Column(db.String(50), nullable = False)
     data_bool = db.Column(db.Boolean, nullable = True)
     data_int = db.Column(db.Integer, nullable = True)
 
